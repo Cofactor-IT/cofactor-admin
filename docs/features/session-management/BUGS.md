@@ -8,3 +8,4 @@ No known defects in CA-12 implementation.
 
 - Session expiry after exactly 7 days of inactivity is time-based and should be validated in production-like environments.
 - Browser-specific cookie behavior should be monitored during QA on Chrome, Edge, and Safari.
+- Role changes during active session are not immediate; they apply on token refresh cycle.

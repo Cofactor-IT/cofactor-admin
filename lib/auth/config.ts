@@ -19,6 +19,7 @@ const LOCKOUT_THRESHOLD = 5
 const LOCKOUT_DURATION_MS = 15 * 60 * 1000
 const SESSION_MAX_AGE_SECONDS = 7 * 24 * 60 * 60
 const SESSION_UPDATE_AGE_SECONDS = 24 * 60 * 60
+const SESSION_COOKIE_NAME = "cofactor-admin-session"
 
 export const ACCOUNT_LOCKED_ERROR = "ACCOUNT_LOCKED"
 export const RATE_LIMIT_ERROR = "RATE_LIMITED"
@@ -72,7 +73,7 @@ function shouldUseSecureCookie(): boolean {
 }
 
 function getSessionCookieName(): string {
-  return shouldUseSecureCookie() ? "__Secure-next-auth.session-token" : "next-auth.session-token"
+  return SESSION_COOKIE_NAME
 }
 
 async function authorizeWithCredentials(credentials: unknown, req: unknown) {
@@ -118,6 +119,8 @@ export const authConfig: NextAuthOptions = {
 
       token.id = user.id
       token.role = (user as { role?: "ANALYST" | "IT" }).role
+      token.email = user.email
+      token.name = user.name
       return token
     },
     async session({ session, token }) {
@@ -125,6 +128,8 @@ export const authConfig: NextAuthOptions = {
 
       session.user.id = (token.id as string | undefined) ?? ""
       session.user.role = (token.role as "ANALYST" | "IT" | undefined) ?? "ANALYST"
+      session.user.email = (token.email as string | undefined) ?? session.user.email
+      session.user.name = (token.name as string | undefined) ?? session.user.name
       return session
     },
   },
@@ -135,6 +140,9 @@ export const authConfig: NextAuthOptions = {
     strategy: "jwt",
     maxAge: SESSION_MAX_AGE_SECONDS,
     updateAge: SESSION_UPDATE_AGE_SECONDS,
+  },
+  jwt: {
+    maxAge: SESSION_MAX_AGE_SECONDS,
   },
   cookies: {
     sessionToken: {

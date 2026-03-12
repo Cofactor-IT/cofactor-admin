@@ -6,6 +6,8 @@
   - JWT strategy
   - 7-day `maxAge`
   - 24-hour `updateAge`
+- Added matching `jwt.maxAge` setting
 - Added explicit hardened session token cookie options
-- Added environment-aware session token cookie name
+- Set session cookie name to `cofactor-admin-session`
+- Added JWT/session claim propagation for `id`, `role`, `email`, and `name`
 - Added unit tests for session and cookie configuration

@@ -57,11 +57,15 @@ Admin navigation uses a persistent left sidebar as the primary wayfinding patter
 ```tsx
 <aside className="fixed left-0 top-0 h-screen w-[240px] bg-[var(--admin-surface)] border-r border-[var(--admin-border)] flex flex-col">
   <div className="h-[64px] flex items-center px-[24px] border-b border-[var(--admin-border)]">
-    <span className="text-[var(--admin-text-primary)] font-bold">Cofactor Admin</span>
+    <Wordmark />
   </div>
 
   <nav className="flex-1 px-[12px] py-[16px] flex flex-col gap-[4px]">
-    {/* Nav items */}
+    <NavItem href="/submissions" icon={FileStack} label="Submissions" />
+    <NavItem href="/scout-profiles" icon={Users} label="Scout Profiles" />
+    <NavItem href="/crm" icon={ContactCard} label="CRM" />
+    <NavItem href="/deal-pipeline" icon={Pipeline} label="Deal Pipeline" />
+    <NavItem href="/email-templates" icon={Mail} label="Email Templates" />
   </nav>
 
   <div className="h-[64px] flex items-center px-[24px] border-t border-[var(--admin-border)]">

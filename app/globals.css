@@ -283,6 +283,14 @@
     background: var(--admin-surface);
   }
 
+  .admin-sidebar-brand {
+    display: flex;
+    height: 64px;
+    align-items: center;
+    border-bottom: 1px solid var(--admin-border);
+    padding: 0 24px;
+  }
+
   .admin-page {
     min-height: 100vh;
     margin-left: 240px;
@@ -361,6 +369,12 @@
     color: var(--admin-text-secondary);
   }
 
+  .admin-nav-icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+
   .admin-nav-item:hover {
     background: var(--admin-surface-raised);
     color: var(--admin-text-primary);
@@ -369,6 +383,24 @@
   .admin-nav-item-active {
     background: var(--teal);
     color: var(--white);
+  }
+
+  .admin-sidebar-utility-link {
+    display: inline-flex;
+    padding: 8px 12px 0;
+    color: var(--admin-text-secondary);
+  }
+
+  .admin-sidebar-utility-link:hover {
+    color: var(--admin-text-primary);
+  }
+
+  .admin-sidebar-userbar {
+    display: flex;
+    height: 64px;
+    align-items: center;
+    border-top: 1px solid var(--admin-border);
+    padding: 0 24px;
   }
 
   .admin-button-primary {

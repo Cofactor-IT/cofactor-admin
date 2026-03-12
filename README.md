@@ -208,6 +208,10 @@ Both run:
   - Shared `AdminShell` for protected pages
   - Fixed `240px` sidebar offset with title/actions header pattern
   - Consistent desktop content padding and global Admin background
+- `CA-36` Sidebar
+  - Fixed five-item Admin navigation with icons and active states
+  - Persistent brand row and bottom user identity bar
+  - Placeholder pages added for all sidebar destinations
 - `CA-11` Password reset
   - `/auth/forgot-password` request flow with generic anti-enumeration messaging
   - `/auth/reset-password` token + expiry validation with one-time token consumption

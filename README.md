@@ -217,7 +217,7 @@ Both run:
   - Phase 1 module routes now resolve at `/submissions`, `/scouts`, `/crm`, `/pipeline`, and `/templates`
   - Legacy route aliases redirect to the new route contract
 - `CA-38` Dashboard
-  - Dashboard landing page with live stat cards and recent activity feed
+  - Dashboard landing page with live stat cards, module previews, and recent activity feed
   - Admin + Scout readonly query composition for fresh counts on page load
   - Card-based dashboard layout with graceful empty states
 - `CA-11` Password reset

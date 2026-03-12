@@ -13,6 +13,7 @@ The dashboard is the first protected page after sign-in and is forced dynamic so
 Exports:
 
 - `findDashboardStats()`
+- `findDashboardPreviewSections()`
 - `findRecentDashboardActivity()`
 
 ### Stats
@@ -37,9 +38,24 @@ Exports:
 - last 10 records, newest first
 - enriches submission/deal records with Scout/Admin reference lookups so feed items have human-readable titles
 
+### Module Previews
+
+- Submission Queue:
+  - Scout `ResearchSubmission`
+  - latest active non-draft submissions
+- Deal Pipeline:
+  - Admin `Deal`
+  - latest updated deals, enriched with Scout submission titles when available
+- Scout Profiles:
+  - Scout `User`
+  - latest approved Scout accounts
+
+If `SCOUT_DB_READONLY_URL` is not configured, Scout-backed preview cards stay visible but render empty with a clear fallback message instead of crashing the dashboard.
+
 ## Components
 
 - `components/dashboard/DashboardOverview.tsx`
+- `components/dashboard/DashboardPreviewSection.tsx`
 - `components/dashboard/DashboardStatCard.tsx`
 - `components/dashboard/DashboardActivityFeed.tsx`
 

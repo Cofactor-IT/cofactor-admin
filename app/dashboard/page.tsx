@@ -6,7 +6,11 @@
 
 import { AdminShell } from "../../components/shared/AdminShell"
 import { DashboardOverview } from "../../components/dashboard/DashboardOverview"
-import { findDashboardStats, findRecentDashboardActivity } from "../../lib/database/queries/dashboard"
+import {
+  findDashboardPreviewSections,
+  findDashboardStats,
+  findRecentDashboardActivity,
+} from "../../lib/database/queries/dashboard"
 import { requireAuthSession } from "../../lib/auth/session"
 
 export const dynamic = "force-dynamic"
@@ -19,8 +23,9 @@ export const dynamic = "force-dynamic"
 export default async function DashboardPage() {
   const session = await requireAuthSession()
   const userName = session.user.name ?? session.user.email ?? "Team Member"
-  const [stats, activity] = await Promise.all([
+  const [stats, previews, activity] = await Promise.all([
     findDashboardStats(),
+    findDashboardPreviewSections(),
     findRecentDashboardActivity(),
   ])
 
@@ -31,7 +36,7 @@ export default async function DashboardPage() {
       userName={userName}
       userRole={session.user.role}
     >
-      <DashboardOverview stats={stats} activity={activity} />
+      <DashboardOverview stats={stats} previews={previews} activity={activity} />
     </AdminShell>
   )
 }

@@ -87,11 +87,20 @@ Pages should account for the fixed sidebar width:
 <div className="ml-[240px] min-h-screen bg-[var(--admin-bg)]">
   <header className="h-[64px] flex items-center justify-between px-[32px] border-b border-[var(--admin-border)]">
     <h2 className="text-[var(--admin-text-primary)]">Submissions</h2>
+    <div>{/* Page-level actions */}</div>
   </header>
 
   <main className="px-[32px] py-[24px]">{/* Content */}</main>
 </div>
 ```
+
+Base page shell rules:
+
+- Sidebar width is fixed at `240px`
+- Main content shell uses `ml-[240px]`
+- Header always uses title-left / actions-right alignment
+- Content padding defaults to `px-[32px] py-[24px]`
+- Layout is desktop-only and stable from `1024px` upward
 
 ---
 

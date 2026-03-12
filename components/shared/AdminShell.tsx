@@ -10,9 +10,10 @@ import { SignOutButton } from "./SignOutButton"
 
 interface AdminShellProps {
   pageTitle: string
-  activePath: "/" | "/submissions" | "/auth/signup"
+  activePath: string
   userName: string
   userRole: "ANALYST" | "IT"
+  pageActions?: ReactNode
   children: ReactNode
 }
 
@@ -30,7 +31,7 @@ function navItemClass(isActive: boolean): string {
 export function AdminShell(props: AdminShellProps) {
   return (
     <main className="admin-root">
-      <aside className="admin-sidebar">
+      <aside className="admin-sidebar w-[240px]">
         <div className="h-[64px] flex items-center px-[24px] border-b border-[var(--admin-border)]">
           <span className="h4 m-0">Cofactor Admin</span>
         </div>
@@ -57,11 +58,12 @@ export function AdminShell(props: AdminShellProps) {
         </div>
       </aside>
 
-      <div className="admin-page">
-        <header className="admin-page-header">
+      <div className="admin-page ml-[240px]">
+        <header className="admin-page-header px-[32px]">
           <h2 className="m-0">{props.pageTitle}</h2>
+          <div className="admin-page-actions">{props.pageActions}</div>
         </header>
-        <section className="admin-page-content">{props.children}</section>
+        <section className="admin-page-content px-[32px] py-[24px]">{props.children}</section>
       </div>
     </main>
   )

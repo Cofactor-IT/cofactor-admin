@@ -6,11 +6,21 @@
  */
 
 import Image from "next/image"
+import { AdminShell } from "../components/shared/AdminShell"
+import { requireAuthSession } from "../lib/auth/session"
 
-export default function HomePage() {
+export default async function HomePage() {
+  const session = await requireAuthSession()
+  const userName = session.user.name ?? session.user.email ?? "Team Member"
+
   return (
-    <main className="admin-shell">
-      <section className="admin-page-content admin-content-stack">
+    <AdminShell
+      pageTitle="Home"
+      activePath="/"
+      userName={userName}
+      userRole={session.user.role}
+    >
+      <section className="admin-content-stack">
         <Image
           src="/branding/cofactor-admin-placeholder-navbar-logo.png"
           alt="Cofactor Admin placeholder navbar logo from Scout"
@@ -28,6 +38,6 @@ export default function HomePage() {
           className="mt-4"
         />
       </section>
-    </main>
+    </AdminShell>
   )
 }

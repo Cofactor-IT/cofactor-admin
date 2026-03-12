@@ -31,6 +31,7 @@ cp .env.example .env
 
 - `ADMIN_DATABASE_URL`
 - `ADMIN_DATABASE_URL_POOLED`
+- `SCOUT_DB_READONLY_URL`
 - `NEXTAUTH_SECRET`
 - `NEXTAUTH_URL`
 
@@ -67,13 +68,37 @@ npm run docker:down
 ## Useful Commands
 
 - `npm run prisma:format`
+- `npm run prisma:format:scout`
 - `npm run prisma:generate`
+- `npm run prisma:generate:scout`
+- `npm run prisma:generate:all`
 - `npm run prisma:db-pull`
 - `npm run prisma:migrate:deploy`
 - `npm run prisma:migrate:status`
+- `npm run scout:readonly:test`
 - `npm run docker:up`
 - `npm run docker:logs`
 - `npm run docker:down`
+
+## Git Remotes
+
+This repo uses both Bitbucket and GitHub.
+
+- `origin` = Bitbucket
+- `github` = GitHub
+
+Verify:
+
+```bash
+git remote -v
+```
+
+Push branch to both:
+
+```bash
+git push -u origin <branch>
+git push -u github <branch>
+```
 
 ## Documentation Workflow (Per Ticket)
 
@@ -95,3 +120,7 @@ Shared standards and design notes live in:
   - Prisma schema + migration baseline
   - `adminDb` client
   - Docker local database setup
+- `CA-14` Set up read-only Scout connection
+  - Separate Scout Prisma schema/client (`@prisma/scout-client`)
+  - `scoutDb` read-only connection layer
+  - Read/write permission verification script

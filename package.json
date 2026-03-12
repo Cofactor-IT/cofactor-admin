@@ -1,0 +1,21 @@
+{
+  "name": "cofactor-admin",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "docker:up": "docker compose up -d admin-db adminer",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f admin-db",
+    "prisma:generate": "prisma generate",
+    "prisma:format": "prisma format",
+    "prisma:db-pull": "prisma db pull",
+    "prisma:migrate:deploy": "prisma migrate deploy",
+    "prisma:migrate:status": "prisma migrate status"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.7.0"
+  },
+  "devDependencies": {
+    "prisma": "^6.7.0"
+  }
+}

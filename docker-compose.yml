@@ -1,0 +1,36 @@
+services:
+  admin-db:
+    image: postgres:16-alpine
+    container_name: cofactor-admin-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${ADMIN_DB_NAME:-cofactor_admin_db}
+      POSTGRES_USER: ${ADMIN_DB_USER:-cofactor}
+      POSTGRES_PASSWORD: ${ADMIN_DB_PASSWORD:-cofactor_admin_local}
+    ports:
+      - "${ADMIN_DB_PORT:-55434}:5432"
+    volumes:
+      - admin_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${ADMIN_DB_USER:-cofactor} -d ${ADMIN_DB_NAME:-cofactor_admin_db}",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  adminer:
+    image: adminer:4
+    container_name: cofactor-adminer
+    restart: unless-stopped
+    ports:
+      - "${ADMINER_PORT:-8080}:8080"
+    depends_on:
+      admin-db:
+        condition: service_healthy
+
+volumes:
+  admin_db_data:

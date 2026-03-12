@@ -22,22 +22,50 @@
     --admin-border: #2d3f5f;
     --admin-text-primary: #f0f4f8;
     --admin-text-secondary: #8fa3bf;
+    color-scheme: dark;
   }
 
   * {
     box-sizing: border-box;
   }
 
-  body,
-  p,
-  .body {
-    font-family: var(--font-merriweather), sans-serif;
+  html,
+  body {
+    margin: 0;
+    min-height: 100%;
+    background-color: var(--admin-bg);
+  }
+
+  body {
+    font-family: var(--font-merriweather), serif;
     font-weight: 400;
     font-size: 16px;
     line-height: 1.5;
     letter-spacing: 0;
     color: var(--admin-text-primary);
-    background-color: var(--admin-bg);
+  }
+
+  p,
+  .body {
+    font-family: var(--font-merriweather), serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.5;
+    letter-spacing: 0;
+    color: var(--admin-text-primary);
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    color: inherit;
+    font: inherit;
   }
 
   @media (min-width: 1024px) {
@@ -232,6 +260,12 @@
     background: var(--admin-bg);
   }
 
+  .admin-root {
+    min-height: 100vh;
+    background: var(--admin-bg);
+    color: var(--admin-text-primary);
+  }
+
   .admin-sidebar {
     position: fixed;
     top: 0;
@@ -261,6 +295,34 @@
 
   .admin-page-content {
     padding: 24px 32px;
+  }
+
+  .admin-auth-content {
+    display: grid;
+    min-height: calc(100vh - 48px);
+    place-items: center;
+  }
+
+  .admin-auth-form {
+    width: 100%;
+    max-width: 420px;
+    padding: 24px;
+    display: grid;
+    gap: 12px;
+  }
+
+  .admin-auth-form-wide {
+    max-width: 560px;
+  }
+
+  .admin-form-grid {
+    display: grid;
+    gap: 12px;
+  }
+
+  .admin-content-stack {
+    display: grid;
+    gap: 16px;
   }
 
   .admin-card {
@@ -294,6 +356,25 @@
   .admin-nav-item-active {
     background: var(--teal);
     color: var(--white);
+  }
+
+  .admin-button-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid transparent;
+    border-radius: 9999px;
+    background: var(--teal);
+    color: var(--white);
+  }
+
+  .admin-button-primary:hover {
+    background: var(--teal-dark);
+  }
+
+  .admin-button-primary:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
   }
 
   .admin-input {

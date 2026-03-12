@@ -6,7 +6,22 @@
 
 import type { Metadata, Viewport } from "next"
 import type { ReactNode } from "react"
+import { Merriweather, Rethink_Sans } from "next/font/google"
 import "./globals.css"
+
+const rethinkSans = Rethink_Sans({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-rethink-sans",
+  weight: ["400", "500", "600", "700"],
+})
+
+const merriweather = Merriweather({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-merriweather",
+  weight: ["400", "700"],
+})
 
 export const metadata: Metadata = {
   title: "Cofactor Admin",
@@ -28,7 +43,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body className={`${rethinkSans.variable} ${merriweather.variable} admin-root`}>{children}</body>
     </html>
   )
 }

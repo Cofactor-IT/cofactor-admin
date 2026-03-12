@@ -10,7 +10,7 @@ import Image from "next/image"
 export default function HomePage() {
   return (
     <main className="admin-shell">
-      <section className="admin-page-content">
+      <section className="admin-page-content admin-content-stack">
         <Image
           src="/branding/cofactor-admin-placeholder-navbar-logo.png"
           alt="Cofactor Admin placeholder navbar logo from Scout"
@@ -25,7 +25,7 @@ export default function HomePage() {
           alt="Cofactor Admin placeholder hero logo from Scout"
           width={420}
           height={88}
-          style={{ marginTop: "16px" }}
+          className="mt-4"
         />
       </section>
     </main>

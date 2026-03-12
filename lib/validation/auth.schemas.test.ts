@@ -5,7 +5,7 @@
  */
 
 import { describe, expect, it } from "vitest"
-import { signUpSchema } from "./auth.schemas"
+import { signInSchema, signUpSchema } from "./auth.schemas"
 
 describe("signUpSchema", () => {
   it("accepts @cofactor.world emails", () => {
@@ -31,5 +31,16 @@ describe("signUpSchema", () => {
     if (!result.success) {
       expect(result.error.flatten().fieldErrors.email?.[0]).toContain("@cofactor.world")
     }
+  })
+})
+
+describe("signInSchema", () => {
+  it("rejects non-cofactor sign-in domains", () => {
+    const result = signInSchema.safeParse({
+      email: "someone@example.com",
+      password: "password",
+    })
+
+    expect(result.success).toBe(false)
   })
 })

@@ -182,3 +182,6 @@ Both run:
 - `CA-7` Domain-restricted sign up
   - `@cofactor.world` validation in server-side Zod schema
   - Signup server action + user creation + audit logging
+- `CA-8` Sign in
+  - NextAuth credentials sign-in with lockout and rate limiting
+  - Protected-route middleware and session wiring

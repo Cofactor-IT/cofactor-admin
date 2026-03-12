@@ -5,6 +5,7 @@
  */
 
 import { hash } from "bcryptjs"
+import { compare } from "bcryptjs"
 
 const PASSWORD_SALT_ROUNDS = 12
 
@@ -16,4 +17,15 @@ const PASSWORD_SALT_ROUNDS = 12
  */
 export async function hashPassword(password: string): Promise<string> {
   return hash(password, PASSWORD_SALT_ROUNDS)
+}
+
+/**
+ * Compares a plain text password against a bcrypt hash.
+ *
+ * @param password - Plain text password input
+ * @param passwordHash - Stored bcrypt password hash
+ * @returns True when password matches the hash
+ */
+export async function verifyPassword(password: string, passwordHash: string): Promise<boolean> {
+  return compare(password, passwordHash)
 }

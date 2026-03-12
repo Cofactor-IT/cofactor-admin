@@ -1,25 +1,107 @@
 /**
  * AdminShell.tsx
  *
- * Shared authenticated page shell with sidebar and page header.
+ * Shared authenticated page shell with fixed Admin sidebar and page header.
  */
 
+import Image from "next/image"
 import Link from "next/link"
 import type { ReactNode } from "react"
 import { SignOutButton } from "./SignOutButton"
 
+type AdminRoute =
+  | "/submissions"
+  | "/scout-profiles"
+  | "/crm"
+  | "/deal-pipeline"
+  | "/email-templates"
+  | "/auth/signup"
+
 interface AdminShellProps {
   pageTitle: string
-  activePath: string
+  activePath: AdminRoute
   userName: string
   userRole: "ANALYST" | "IT"
   pageActions?: ReactNode
   children: ReactNode
 }
 
+interface NavItemDefinition {
+  href: Exclude<AdminRoute, "/auth/signup">
+  label: string
+}
+
+const NAV_ITEMS: NavItemDefinition[] = [
+  { href: "/submissions", label: "Submissions" },
+  { href: "/scout-profiles", label: "Scout Profiles" },
+  { href: "/crm", label: "CRM" },
+  { href: "/deal-pipeline", label: "Deal Pipeline" },
+  { href: "/email-templates", label: "Email Templates" },
+]
+
 function navItemClass(isActive: boolean): string {
   if (isActive) return "admin-nav-item admin-nav-item-active"
   return "admin-nav-item"
+}
+
+function navIconClassName(isActive: boolean): string {
+  if (isActive) return "admin-nav-icon text-[var(--white)]"
+  return "admin-nav-icon text-[var(--admin-text-secondary)]"
+}
+
+function FileStackIcon(props: { isActive: boolean }) {
+  return (
+    <svg viewBox="0 0 20 20" fill="none" aria-hidden="true" className={navIconClassName(props.isActive)}>
+      <path d="M5.5 3.5h6l3 3v10h-9Z" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M11.5 3.5v3h3" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M7.25 10h5.5M7.25 13h5.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function UsersIcon(props: { isActive: boolean }) {
+  return (
+    <svg viewBox="0 0 20 20" fill="none" aria-hidden="true" className={navIconClassName(props.isActive)}>
+      <path d="M6.75 9.25a2.75 2.75 0 1 0 0-5.5 2.75 2.75 0 0 0 0 5.5ZM13.5 8a2.25 2.25 0 1 0 0-4.5 2.25 2.25 0 0 0 0 4.5Z" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M2.75 15.75a4 4 0 0 1 8 0M11 15.75a3 3 0 0 1 6 0" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function ContactCardIcon(props: { isActive: boolean }) {
+  return (
+    <svg viewBox="0 0 20 20" fill="none" aria-hidden="true" className={navIconClassName(props.isActive)}>
+      <rect x="3.5" y="4.5" width="13" height="11" rx="1.5" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M6.5 9.25h7M6.5 12h4.5M7.75 7.25a1 1 0 1 1 0-.01" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function PipelineIcon(props: { isActive: boolean }) {
+  return (
+    <svg viewBox="0 0 20 20" fill="none" aria-hidden="true" className={navIconClassName(props.isActive)}>
+      <rect x="3.5" y="4.5" width="4" height="11" rx="1" stroke="currentColor" strokeWidth="1.6" />
+      <rect x="8.5" y="7" width="3" height="8.5" rx="1" stroke="currentColor" strokeWidth="1.6" />
+      <rect x="12.5" y="9.5" width="4" height="6" rx="1" stroke="currentColor" strokeWidth="1.6" />
+    </svg>
+  )
+}
+
+function MailTemplateIcon(props: { isActive: boolean }) {
+  return (
+    <svg viewBox="0 0 20 20" fill="none" aria-hidden="true" className={navIconClassName(props.isActive)}>
+      <rect x="3.5" y="5" width="13" height="10" rx="1.5" stroke="currentColor" strokeWidth="1.6" />
+      <path d="m4.75 6.5 5.25 4 5.25-4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+function navIcon(href: NavItemDefinition["href"], isActive: boolean): ReactNode {
+  if (href === "/submissions") return <FileStackIcon isActive={isActive} />
+  if (href === "/scout-profiles") return <UsersIcon isActive={isActive} />
+  if (href === "/crm") return <ContactCardIcon isActive={isActive} />
+  if (href === "/deal-pipeline") return <PipelineIcon isActive={isActive} />
+  return <MailTemplateIcon isActive={isActive} />
 }
 
 /**
@@ -31,30 +113,41 @@ function navItemClass(isActive: boolean): string {
 export function AdminShell(props: AdminShellProps) {
   return (
     <main className="admin-root">
-      <aside className="admin-sidebar w-[240px]">
-        <div className="h-[64px] flex items-center px-[24px] border-b border-[var(--admin-border)]">
-          <span className="h4 m-0">Cofactor Admin</span>
+      <aside className="admin-sidebar">
+        <div className="admin-sidebar-brand">
+          <Image
+            src="/branding/cofactor-admin-placeholder-navbar-logo.png"
+            alt="Cofactor Admin wordmark"
+            width={148}
+            height={31}
+            priority
+          />
         </div>
 
         <nav className="flex-1 px-[12px] py-[16px] flex flex-col gap-[4px]">
-          <Link href="/" className={navItemClass(props.activePath === "/")}>
-            Home
-          </Link>
-          <Link href="/submissions" className={navItemClass(props.activePath === "/submissions")}>
-            Submissions
-          </Link>
+          {NAV_ITEMS.map((item) => {
+            const isActive = props.activePath === item.href
+            return (
+              <Link key={item.href} href={item.href} className={navItemClass(isActive)}>
+                {navIcon(item.href, isActive)}
+                <span className="label text-inherit">{item.label}</span>
+              </Link>
+            )
+          })}
           {props.userRole === "IT" ? (
-            <Link href="/auth/signup" className={navItemClass(props.activePath === "/auth/signup")}>
-              Team members
+            <Link href="/auth/signup" className="admin-sidebar-utility-link">
+              <span className="caption">Manage team members</span>
             </Link>
           ) : null}
         </nav>
 
-        <div className="border-t border-[var(--admin-border)] p-[16px] flex flex-col gap-[10px]">
+        <div className="px-[16px] pb-[12px]">
+          <SignOutButton />
+        </div>
+        <div className="admin-sidebar-userbar">
           <span className="caption">
             {props.userName} - {props.userRole}
           </span>
-          <SignOutButton />
         </div>
       </aside>
 

@@ -88,6 +88,9 @@ npm run docker:down
 - `npm run prisma:db-pull`
 - `npm run prisma:migrate:deploy`
 - `npm run prisma:migrate:status`
+- `npm run lint`
+- `npm run type-check`
+- `npm run build`
 - `npm run scout:local:setup`
 - `npm run scout:readonly:test`
 - `npm run scout:write:test`
@@ -130,6 +133,21 @@ Shared standards and design notes live in:
 - `docs/pm-notes/CODE_STANDARDS.md`
 - `docs/pm-notes/DESIGN_GUIDELINES.md`
 
+## CI/CD
+
+Both pipeline systems are configured:
+
+- GitHub Actions: `.github/workflows/ci.yml`
+- Bitbucket Pipelines: `bitbucket-pipelines.yml`
+
+Both run:
+
+- `npm ci`
+- `npm run prisma:generate:all`
+- `npm run lint`
+- `npm run type-check`
+- `npm run build`
+
 ## Initial Ticket Coverage
 
 - `CA-13` Setup Cofactor Admin database
@@ -143,3 +161,7 @@ Shared standards and design notes live in:
 - `CA-15` Set up scoped write connection to Scout
   - `scoutWriteDb` scoped-write connection layer
   - Status-only permission verification script
+- `CA-22` Set up CI/CD pipeline
+  - GitHub Actions workflow
+  - Bitbucket pipeline config
+  - lint/type-check/build quality gates

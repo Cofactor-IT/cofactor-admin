@@ -17,14 +17,31 @@
     "prisma:migrate:status": "prisma migrate status",
     "scout:local:setup": "node scripts/setup-local-scout-db.mjs",
     "scout:readonly:test": "node scripts/test-scout-readonly.mjs",
-    "scout:write:test": "node scripts/test-scout-write-scope.mjs"
+    "scout:write:test": "node scripts/test-scout-write-scope.mjs",
+    "lint": "eslint . --max-warnings=0",
+    "pretype-check": "npm run prisma:generate:scout",
+    "type-check": "tsc --noEmit",
+    "prebuild": "npm run prisma:generate:scout",
+    "build": "next build"
   },
   "dependencies": {
-    "@prisma/client": "^6.7.0"
+    "@prisma/client": "^6.7.0",
+    "next": "^16.1.6",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
   },
   "devDependencies": {
+    "@types/node": "^22.19.15",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "autoprefixer": "^10.4.27",
     "dotenv": "^17.3.1",
+    "eslint": "^9.39.4",
+    "eslint-config-next": "^16.1.6",
     "pg": "^8.20.0",
-    "prisma": "^6.7.0"
+    "postcss": "^8.5.8",
+    "prisma": "^6.7.0",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.9.3"
   }
 }

@@ -20,9 +20,9 @@
 
 1. `SignOutButton` calls `logSignOutAuditAction()`.
 2. Client clears local UI state key (`cofactor-admin-ui-state`).
-3. Calls `signOut({ callbackUrl: "/auth/signin" })`.
+3. Calls `signOut({ callbackUrl: "/signin" })`.
 
 ## Back-Button Protection
 
 - `proxy.ts` protects non-public routes.
-- After sign-out, revisiting protected pages redirects to `/auth/signin`.
+- After sign-out, revisiting protected pages redirects to `/signin`.

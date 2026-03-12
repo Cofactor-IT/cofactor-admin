@@ -8,6 +8,10 @@ import { describe, expect, it } from "vitest"
 import { authConfig } from "./config"
 
 describe("authConfig session management", () => {
+  it("uses /signin as the public credentials entry route", () => {
+    expect(authConfig.pages?.signIn).toBe("/signin")
+  })
+
   it("uses jwt strategy with seven-day max age and daily update age", () => {
     expect(authConfig.session?.strategy).toBe("jwt")
     expect(authConfig.session?.maxAge).toBe(7 * 24 * 60 * 60)

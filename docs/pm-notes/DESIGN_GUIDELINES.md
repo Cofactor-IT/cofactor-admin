@@ -62,10 +62,10 @@ Admin navigation uses a persistent left sidebar as the primary wayfinding patter
 
   <nav className="flex-1 px-[12px] py-[16px] flex flex-col gap-[4px]">
     <NavItem href="/submissions" icon={FileStack} label="Submissions" />
-    <NavItem href="/scout-profiles" icon={Users} label="Scout Profiles" />
+    <NavItem href="/scouts" icon={Users} label="Scout Profiles" />
     <NavItem href="/crm" icon={ContactCard} label="CRM" />
-    <NavItem href="/deal-pipeline" icon={Pipeline} label="Deal Pipeline" />
-    <NavItem href="/email-templates" icon={Mail} label="Email Templates" />
+    <NavItem href="/pipeline" icon={Pipeline} label="Deal Pipeline" />
+    <NavItem href="/templates" icon={Mail} label="Email Templates" />
   </nav>
 
   <div className="h-[64px] flex items-center px-[24px] border-t border-[var(--admin-border)]">

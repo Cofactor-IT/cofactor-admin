@@ -24,10 +24,7 @@ export default async function CrmPage() {
       userName={userName}
       userRole={session.user.role}
     >
-      <WorkspacePlaceholder
-        title="CRM operations"
-        description="Contact records, interaction history, and relationship tracking will be built here."
-      />
+      <WorkspacePlaceholder title="CRM" description="Coming soon." />
     </AdminShell>
   )
 }

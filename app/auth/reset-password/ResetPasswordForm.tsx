@@ -76,7 +76,7 @@ export function ResetPasswordForm(props: ResetPasswordFormProps) {
       <Button type="submit" disabled={isPending}>
         {isPending ? "Updating..." : "Update Password"}
       </Button>
-      <TextButton href="/auth/signin">Back to sign in</TextButton>
+      <TextButton href="/signin">Back to sign in</TextButton>
     </form>
   )
 }

@@ -11,10 +11,10 @@ import { SignOutButton } from "./SignOutButton"
 
 type AdminRoute =
   | "/submissions"
-  | "/scout-profiles"
+  | "/scouts"
   | "/crm"
-  | "/deal-pipeline"
-  | "/email-templates"
+  | "/pipeline"
+  | "/templates"
   | "/auth/signup"
 
 interface AdminShellProps {
@@ -33,10 +33,10 @@ interface NavItemDefinition {
 
 const NAV_ITEMS: NavItemDefinition[] = [
   { href: "/submissions", label: "Submissions" },
-  { href: "/scout-profiles", label: "Scout Profiles" },
+  { href: "/scouts", label: "Scout Profiles" },
   { href: "/crm", label: "CRM" },
-  { href: "/deal-pipeline", label: "Deal Pipeline" },
-  { href: "/email-templates", label: "Email Templates" },
+  { href: "/pipeline", label: "Deal Pipeline" },
+  { href: "/templates", label: "Email Templates" },
 ]
 
 function navItemClass(isActive: boolean): string {
@@ -98,9 +98,9 @@ function MailTemplateIcon(props: { isActive: boolean }) {
 
 function navIcon(href: NavItemDefinition["href"], isActive: boolean): ReactNode {
   if (href === "/submissions") return <FileStackIcon isActive={isActive} />
-  if (href === "/scout-profiles") return <UsersIcon isActive={isActive} />
+  if (href === "/scouts") return <UsersIcon isActive={isActive} />
   if (href === "/crm") return <ContactCardIcon isActive={isActive} />
-  if (href === "/deal-pipeline") return <PipelineIcon isActive={isActive} />
+  if (href === "/pipeline") return <PipelineIcon isActive={isActive} />
   return <MailTemplateIcon isActive={isActive} />
 }
 

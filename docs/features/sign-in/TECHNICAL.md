@@ -11,14 +11,14 @@ Implement NextAuth credentials sign-in for Cofactor Admin with lockout and rate-
 ## Files
 
 ```
-app/auth/signin/page.tsx                 # Credentials sign-in UI
+app/signin/page.tsx                      # Canonical credentials sign-in UI
 app/api/auth/[...nextauth]/route.ts      # NextAuth API route handlers
 lib/auth/config.ts                       # NextAuth options + authorize logic
 lib/auth/session.ts                      # Server session helpers
 lib/auth/password.ts                     # verifyPassword utility
 lib/security/rate-limit.ts               # In-memory IP rate limiter
 lib/database/queries/users.ts            # Auth user lookups + lockout updates
-middleware.ts                            # Session guard for protected routes
+proxy.ts                                 # Session guard for protected routes
 types/next-auth.d.ts                     # Session/JWT type augmentation
 ```
 
@@ -51,8 +51,9 @@ Migration:
 
 ## Route Protection
 
-`middleware.ts`:
+`proxy.ts`:
 
-- Allows `/auth/*` and `/api/auth/*`
-- Requires valid NextAuth token for all other routes
-- Redirects unauthenticated users to `/auth/signin?callbackUrl=<path>`
+- Allows `/signin`, password-reset auth routes, and `/api/auth/*`
+- Requires valid NextAuth token for protected routes
+- Redirects unauthenticated users to `/signin?callbackUrl=<path>`
+- Redirects authenticated users away from `/signin` to `/dashboard`

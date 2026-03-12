@@ -8,7 +8,7 @@ Provide a reliable sign-out flow that always destroys the current session and re
 
 1. User clicks **Sign out** in the sidebar.
 2. App logs a sign-out audit event.
-3. NextAuth clears session cookie and redirects to `/auth/signin`.
+3. NextAuth clears session cookie and redirects to `/signin`.
 
 ## Security Intent
 

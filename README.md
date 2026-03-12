@@ -199,7 +199,7 @@ Both run:
 - `CA-9` Sign out
   - Shared sidebar sign-out action available across protected pages
   - Sign-out audit event logged before session destruction (`USER_SIGN_OUT`)
-  - Redirect to `/auth/signin` with middleware-protected back-button behavior
+  - Redirect to `/signin` with middleware-protected back-button behavior
 - `CA-10` Role assignment
   - Role stored on User and embedded in JWT/session claims
   - IT-only account creation enforced in route middleware and server action
@@ -212,6 +212,10 @@ Both run:
   - Fixed five-item Admin navigation with icons and active states
   - Persistent brand row and bottom user identity bar
   - Placeholder pages added for all sidebar destinations
+- `CA-37` Routing structure
+  - Added `/dashboard` authenticated landing route and `/signin` public sign-in entry
+  - Phase 1 module routes now resolve at `/submissions`, `/scouts`, `/crm`, `/pipeline`, and `/templates`
+  - Legacy route aliases redirect to the new route contract
 - `CA-11` Password reset
   - `/auth/forgot-password` request flow with generic anti-enumeration messaging
   - `/auth/reset-password` token + expiry validation with one-time token consumption

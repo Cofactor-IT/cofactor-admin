@@ -25,7 +25,7 @@ export function getCurrentSession() {
 export async function requireAuthSession() {
   const session = await getCurrentSession()
   if (!session?.user?.id) {
-    redirect("/auth/signin")
+    redirect("/signin")
   }
 
   return session

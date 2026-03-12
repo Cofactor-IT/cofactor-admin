@@ -15,7 +15,7 @@ Provide a fixed Admin navigation rail that persists across all protected pages.
 ## Routes
 
 - `/submissions`
-- `/scout-profiles`
+- `/scouts`
 - `/crm`
-- `/deal-pipeline`
-- `/email-templates`
+- `/pipeline`
+- `/templates`

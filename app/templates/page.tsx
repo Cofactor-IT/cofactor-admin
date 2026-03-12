@@ -1,25 +1,30 @@
 /**
  * page.tsx
  *
- * Submissions workspace placeholder page for authenticated Admin users.
+ * Email Templates workspace placeholder page.
  */
 
-import { requireAuthSession } from "../../lib/auth/session"
 import { AdminShell } from "../../components/shared/AdminShell"
 import { WorkspacePlaceholder } from "../../components/shared/WorkspacePlaceholder"
+import { requireAuthSession } from "../../lib/auth/session"
 
-export default async function SubmissionsPage() {
+/**
+ * Renders the Email Templates workspace shell.
+ *
+ * @returns Protected placeholder page
+ */
+export default async function TemplatesPage() {
   const session = await requireAuthSession()
   const userName = session.user.name ?? session.user.email ?? "Team Member"
 
   return (
     <AdminShell
-      pageTitle="Submissions"
-      activePath="/submissions"
+      pageTitle="Email Templates"
+      activePath="/templates"
       userName={userName}
       userRole={session.user.role}
     >
-      <WorkspacePlaceholder title="Submissions" description="Coming soon." />
+      <WorkspacePlaceholder title="Email Templates" description="Coming soon." />
     </AdminShell>
   )
 }

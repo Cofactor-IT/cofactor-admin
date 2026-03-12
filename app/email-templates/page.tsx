@@ -1,33 +1,16 @@
 /**
  * page.tsx
  *
- * Email Templates workspace placeholder page.
+ * Compatibility redirect for legacy templates route.
  */
 
-import { AdminShell } from "../../components/shared/AdminShell"
-import { WorkspacePlaceholder } from "../../components/shared/WorkspacePlaceholder"
-import { requireAuthSession } from "../../lib/auth/session"
+import { redirect } from "next/navigation"
 
 /**
- * Renders the Email Templates workspace shell.
+ * Redirects legacy `/email-templates` traffic to `/templates`.
  *
- * @returns Protected placeholder page
+ * @returns Never returns; forwards to `/templates`
  */
-export default async function EmailTemplatesPage() {
-  const session = await requireAuthSession()
-  const userName = session.user.name ?? session.user.email ?? "Team Member"
-
-  return (
-    <AdminShell
-      pageTitle="Email Templates"
-      activePath="/email-templates"
-      userName={userName}
-      userRole={session.user.role}
-    >
-      <WorkspacePlaceholder
-        title="Email templates"
-        description="Reusable outreach and process templates will be managed from this workspace."
-      />
-    </AdminShell>
-  )
+export default function LegacyEmailTemplatesPage() {
+  redirect("/templates")
 }

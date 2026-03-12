@@ -7,10 +7,10 @@
 import { redirect } from "next/navigation"
 
 /**
- * Redirects the root route to submissions.
+ * Redirects the root route to dashboard.
  *
- * @returns Never returns; forwards to `/submissions`
+ * @returns Never returns; forwards to `/dashboard`
  */
 export default function HomePage() {
-  redirect("/submissions")
+  redirect("/dashboard")
 }

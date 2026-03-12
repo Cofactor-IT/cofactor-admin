@@ -10,7 +10,7 @@ Admin users need a secure credentials-based sign-in flow tied to Admin's own dat
 
 ## Core Behavior
 
-- Sign-in page at `/auth/signin`
+- Sign-in page at `/signin`
 - Credentials provider via NextAuth
 - Domain-restricted email validation (`@cofactor.world`)
 - Generic invalid credentials message
@@ -19,4 +19,4 @@ Admin users need a secure credentials-based sign-in flow tied to Admin's own dat
 
 ## Protected Access
 
-All non-auth routes require a valid session and redirect to `/auth/signin` when unauthenticated.
+Protected routes require a valid session and redirect to `/signin` when unauthenticated.

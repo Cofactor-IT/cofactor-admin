@@ -20,10 +20,10 @@ It now includes:
 Primary routes in the shell:
 
 - `/submissions`
-- `/scout-profiles`
+- `/scouts`
 - `/crm`
-- `/deal-pipeline`
-- `/email-templates`
+- `/pipeline`
+- `/templates`
 
 IT-only utility navigation remains available for `/auth/signup`, but it is not part of the primary sidebar list.
 
@@ -31,9 +31,9 @@ IT-only utility navigation remains available for `/auth/signup`, but it is not p
 
 Placeholder pages were added so all sidebar links resolve immediately:
 
-- `app/scout-profiles/page.tsx`
+- `app/scouts/page.tsx`
 - `app/crm/page.tsx`
-- `app/deal-pipeline/page.tsx`
-- `app/email-templates/page.tsx`
+- `app/pipeline/page.tsx`
+- `app/templates/page.tsx`
 
-Root route now redirects to `/submissions`.
+Root route now redirects to `/dashboard`.

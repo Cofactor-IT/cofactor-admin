@@ -9,6 +9,8 @@
 import { useMemo, useState } from "react"
 import { signIn } from "next-auth/react"
 import { useRouter } from "next/navigation"
+import { Button } from "../../../components/ui/Button"
+import { TextButton } from "../../../components/ui/TextButton"
 
 const INVALID_CREDENTIALS_MESSAGE = "Invalid email or password."
 const LOCKED_ACCOUNT_MESSAGE = "Too many attempts, try again in 15 minutes."
@@ -102,9 +104,10 @@ export function SignInForm(props: SignInFormProps) {
 
           {displayedError ? <p className="caption">{displayedError}</p> : null}
 
-          <button type="submit" className="button admin-button-primary" disabled={isSubmitting}>
+          <Button type="submit" disabled={isSubmitting}>
             {isSubmitting ? "Signing in..." : "Sign In"}
-          </button>
+          </Button>
+          <TextButton href="/auth/signup">IT users: create account</TextButton>
         </form>
       </section>
     </main>

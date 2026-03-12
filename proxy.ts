@@ -1,5 +1,5 @@
 /**
- * middleware.ts
+ * proxy.ts
  *
  * Session guard for protected Admin routes.
  */
@@ -27,7 +27,7 @@ function isITOnlyPath(pathname: string): boolean {
  * @param request - Incoming edge request
  * @returns Next response or redirect
  */
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
   if (isPublicPath(pathname)) {
     return NextResponse.next()

@@ -8,6 +8,8 @@
 
 import { useActionState } from "react"
 import { signUp, type SignUpActionState } from "../../../actions/auth.actions"
+import { Button } from "../../../components/ui/Button"
+import { TextButton } from "../../../components/ui/TextButton"
 
 const INITIAL_STATE: SignUpActionState = {
   success: false,
@@ -61,9 +63,10 @@ export default function SignUpPage() {
 
               {state.message ? <p className="caption">{state.message}</p> : null}
 
-              <button type="submit" className="button admin-button-primary" disabled={isPending}>
+              <Button type="submit" disabled={isPending}>
                 {isPending ? "Creating..." : "Create Account"}
-              </button>
+              </Button>
+              <TextButton href="/submissions">Back to submissions</TextButton>
             </div>
           </form>
         </div>

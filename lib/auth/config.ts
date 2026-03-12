@@ -17,6 +17,8 @@ import { verifyPassword } from "./password"
 
 const LOCKOUT_THRESHOLD = 5
 const LOCKOUT_DURATION_MS = 15 * 60 * 1000
+const SESSION_MAX_AGE_SECONDS = 7 * 24 * 60 * 60
+const SESSION_UPDATE_AGE_SECONDS = 24 * 60 * 60
 
 export const ACCOUNT_LOCKED_ERROR = "ACCOUNT_LOCKED"
 export const RATE_LIMIT_ERROR = "RATE_LIMITED"
@@ -63,6 +65,14 @@ function applyRateLimit(req: unknown): boolean {
 
 function isUserLocked(lockedUntil: Date | null): boolean {
   return Boolean(lockedUntil && lockedUntil > new Date())
+}
+
+function shouldUseSecureCookie(): boolean {
+  return process.env.NODE_ENV === "production"
+}
+
+function getSessionCookieName(): string {
+  return shouldUseSecureCookie() ? "__Secure-next-auth.session-token" : "next-auth.session-token"
 }
 
 async function authorizeWithCredentials(credentials: unknown, req: unknown) {
@@ -123,6 +133,18 @@ export const authConfig: NextAuthOptions = {
   },
   session: {
     strategy: "jwt",
-    maxAge: 7 * 24 * 60 * 60,
+    maxAge: SESSION_MAX_AGE_SECONDS,
+    updateAge: SESSION_UPDATE_AGE_SECONDS,
+  },
+  cookies: {
+    sessionToken: {
+      name: getSessionCookieName(),
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        secure: shouldUseSecureCookie(),
+        path: "/",
+      },
+    },
   },
 }

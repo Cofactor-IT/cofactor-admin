@@ -184,6 +184,9 @@ Both run:
 - `CA-8` Sign in
   - NextAuth credentials sign-in with lockout and rate limiting
   - Protected-route middleware and session wiring
+- `CA-12` Session management
+  - JWT session strategy with 7-day `maxAge` and 24-hour `updateAge`
+  - Explicit session token cookie hardening (`httpOnly`, `sameSite`, `secure`, `path`)
 - `CA-10` Role assignment
   - Role stored on User and embedded in JWT/session claims
   - IT-only account creation enforced in route middleware and server action

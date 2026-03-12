@@ -2,7 +2,7 @@
 
 ## Canonical Route Map
 
-- `/dashboard` -> authenticated landing route that forwards to `/submissions`
+- `/dashboard` -> authenticated dashboard placeholder page
 - `/signin` -> public credentials sign-in page
 - `/submissions` -> protected placeholder
 - `/scouts` -> protected placeholder

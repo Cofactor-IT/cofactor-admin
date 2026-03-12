@@ -13,12 +13,13 @@ It now includes:
 - right border via `--admin-border`
 - top `64px` brand row
 - nav items with inline SVG icons and labels
-- bottom `64px` user identity bar
+- lower utility area for IT-only management and sign-out controls
 
 ## Active Navigation Model
 
 Primary routes in the shell:
 
+- `/dashboard`
 - `/submissions`
 - `/scouts`
 - `/crm`

@@ -4,13 +4,30 @@
  * Default authenticated landing route for Admin.
  */
 
-import { redirect } from "next/navigation"
+import { AdminShell } from "../../components/shared/AdminShell"
+import { WorkspacePlaceholder } from "../../components/shared/WorkspacePlaceholder"
+import { requireAuthSession } from "../../lib/auth/session"
 
 /**
- * Redirects signed-in users to the primary submissions workspace.
+ * Renders the default Admin dashboard workspace.
  *
- * @returns Never returns; forwards to `/submissions`
+ * @returns Protected dashboard placeholder page
  */
-export default function DashboardPage() {
-  redirect("/submissions")
+export default async function DashboardPage() {
+  const session = await requireAuthSession()
+  const userName = session.user.name ?? session.user.email ?? "Team Member"
+
+  return (
+    <AdminShell
+      pageTitle="Dashboard"
+      activePath="/dashboard"
+      userName={userName}
+      userRole={session.user.role}
+    >
+      <WorkspacePlaceholder
+        title="Dashboard"
+        description="Coming soon."
+      />
+    </AdminShell>
+  )
 }

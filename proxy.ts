@@ -8,7 +8,7 @@ import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 import { getToken } from "next-auth/jwt"
 
-const PUBLIC_PATHS = new Set(["/auth/signin"])
+const PUBLIC_PATHS = new Set(["/auth/signin", "/auth/forgot-password", "/auth/reset-password"])
 const IT_ONLY_PATH_PREFIXES = ["/settings", "/auth/signup"]
 
 function isPublicPath(pathname: string): boolean {

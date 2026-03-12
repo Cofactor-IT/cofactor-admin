@@ -30,6 +30,13 @@ interface AuthUserRecord {
   lockedUntil: Date | null
 }
 
+interface PasswordResetCandidateRecord {
+  id: string
+  name: string
+  email: string
+  isActive: boolean
+}
+
 /**
  * Finds a user by normalized email.
  *
@@ -69,6 +76,28 @@ export async function findAuthUserByEmail(email: string): Promise<AuthUserRecord
       isActive: true,
       failedLoginAttempts: true,
       lockedUntil: true,
+    },
+  })
+}
+
+/**
+ * Finds active account metadata used during password reset request flow.
+ *
+ * @param email - Email address requesting reset
+ * @returns Candidate record including active status or null
+ */
+export async function findPasswordResetCandidateByEmail(
+  email: string,
+): Promise<PasswordResetCandidateRecord | null> {
+  return adminDb.user.findUnique({
+    where: {
+      email: email.toLowerCase(),
+    },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      isActive: true,
     },
   })
 }

@@ -107,6 +107,7 @@ export function SignInForm(props: SignInFormProps) {
           <Button type="submit" disabled={isSubmitting}>
             {isSubmitting ? "Signing in..." : "Sign In"}
           </Button>
+          <TextButton href="/auth/forgot-password">Forgot password?</TextButton>
           <TextButton href="/auth/signup">IT users: create account</TextButton>
         </form>
       </section>

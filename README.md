@@ -33,6 +33,7 @@ cp .env.example .env
 - `ADMIN_DATABASE_URL_POOLED`
 - `SCOUT_DB_READONLY_URL`
 - `SCOUT_DB_WRITE_URL`
+- `ADMIN_ACCOUNT_CREATION_KEY`
 - `NEXTAUTH_SECRET`
 - `NEXTAUTH_URL`
 
@@ -80,6 +81,9 @@ npm run docker:down
 
 ## Useful Commands
 
+- `npm run dev` (webpack, default for stability)
+- `npm run dev:turbo` (optional Turbopack mode)
+- `npm run start`
 - `npm run prisma:format`
 - `npm run prisma:format:scout`
 - `npm run prisma:generate`
@@ -98,6 +102,16 @@ npm run docker:down
 - `npm run docker:up:all`
 - `npm run docker:logs`
 - `npm run docker:down`
+
+## Branding Placeholders
+
+Placeholder favicon and logos are currently copied from Cofactor Scout:
+
+- `app/favicon.ico`
+- `public/branding/cofactor-admin-placeholder-navbar-logo.png`
+- `public/branding/cofactor-admin-placeholder-hero-logo.png`
+- `public/branding/cofactor-admin-placeholder-navbar-logo.svg`
+- `public/branding/cofactor-admin-placeholder-hero-logo.svg`
 
 ## Git Remotes
 
@@ -165,3 +179,6 @@ Both run:
   - GitHub Actions workflow
   - Bitbucket pipeline config
   - lint/type-check/build quality gates
+- `CA-7` Domain-restricted sign up
+  - `@cofactor.world` validation in server-side Zod schema
+  - Signup server action + user creation + audit logging

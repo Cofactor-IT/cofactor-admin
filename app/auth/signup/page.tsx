@@ -26,15 +26,10 @@ export default function SignUpPage() {
       <section className="admin-page-content admin-auth-content">
         <div className="admin-content-stack admin-auth-form-wide w-full">
           <h1>Admin Sign Up</h1>
-          <p className="body">Only IT operators can create accounts for @cofactor.world users.</p>
+          <p className="body">Only signed-in IT users can create accounts for @cofactor.world users.</p>
 
           <form action={formAction} className="admin-card admin-auth-form admin-auth-form-wide">
             <div className="admin-form-grid">
-              <label className="label" htmlFor="creationKey">
-                IT Operator Key
-              </label>
-              <input id="creationKey" name="creationKey" type="password" className="admin-input" required />
-
               <label className="label" htmlFor="name">
                 Full name
               </label>

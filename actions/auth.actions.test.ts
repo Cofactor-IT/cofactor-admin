@@ -10,6 +10,10 @@ vi.mock("../lib/auth/password", () => ({
   hashPassword: vi.fn(),
 }))
 
+vi.mock("../lib/auth/permissions", () => ({
+  requireIT: vi.fn(),
+}))
+
 vi.mock("../lib/database/queries/users", () => ({
   findUserByEmail: vi.fn(),
   createUser: vi.fn(),
@@ -20,13 +24,13 @@ vi.mock("../lib/database/queries/auditLogs", () => ({
 }))
 
 import { signUp } from "./auth.actions"
+import { requireIT } from "../lib/auth/permissions"
 import { hashPassword } from "../lib/auth/password"
 import { logAuditAction } from "../lib/database/queries/auditLogs"
 import { createUser, findUserByEmail } from "../lib/database/queries/users"
 
 function buildFormData(overrides: Partial<Record<string, string>> = {}) {
   const values = {
-    creationKey: "it-creation-key",
     name: "Theis Admin",
     email: "theis@cofactor.world",
     password: "strong-password-123",
@@ -41,8 +45,13 @@ function buildFormData(overrides: Partial<Record<string, string>> = {}) {
 
 describe("signUp", () => {
   beforeEach(() => {
-    process.env.ADMIN_ACCOUNT_CREATION_KEY = "it-creation-key"
     vi.clearAllMocks()
+    vi.mocked(requireIT).mockResolvedValue({
+      user: {
+        id: "it_user_1",
+        role: "IT",
+      },
+    } as Awaited<ReturnType<typeof requireIT>>)
   })
 
   it("rejects non-cofactor domains before any DB query", async () => {
@@ -56,11 +65,12 @@ describe("signUp", () => {
     expect(hashPassword).not.toHaveBeenCalled()
   })
 
-  it("rejects requests without valid IT operator key", async () => {
-    const state = await signUp({ success: false }, buildFormData({ creationKey: "wrong-key" }))
+  it("rejects requests from non-IT users", async () => {
+    vi.mocked(requireIT).mockRejectedValueOnce(new Error("Unauthorized"))
+    const state = await signUp({ success: false }, buildFormData())
 
     expect(state.success).toBe(false)
-    expect(state.message).toContain("restricted to IT operators")
+    expect(state.message).toContain("Only IT users")
     expect(findUserByEmail).not.toHaveBeenCalled()
     expect(createUser).not.toHaveBeenCalled()
   })
@@ -86,6 +96,15 @@ describe("signUp", () => {
       passwordHash: "hashed-password",
       role: "ANALYST",
     })
-    expect(logAuditAction).toHaveBeenCalledOnce()
+    expect(logAuditAction).toHaveBeenCalledWith({
+      action: "USER_CREATED",
+      resourceType: "User",
+      resourceId: "user_1",
+      userId: "it_user_1",
+      changes: {
+        email: "theis@cofactor.world",
+        role: "ANALYST",
+      },
+    })
   })
 })

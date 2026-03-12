@@ -33,7 +33,6 @@ cp .env.example .env
 - `ADMIN_DATABASE_URL_POOLED`
 - `SCOUT_DB_READONLY_URL`
 - `SCOUT_DB_WRITE_URL`
-- `ADMIN_ACCOUNT_CREATION_KEY`
 - `NEXTAUTH_SECRET`
 - `NEXTAUTH_URL`
 
@@ -185,3 +184,7 @@ Both run:
 - `CA-8` Sign in
   - NextAuth credentials sign-in with lockout and rate limiting
   - Protected-route middleware and session wiring
+- `CA-10` Role assignment
+  - Role stored on User and embedded in JWT/session claims
+  - IT-only account creation enforced in route middleware and server action
+  - Shared role guard helpers for IT and analyst-level authorization

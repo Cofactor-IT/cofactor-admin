@@ -4,8 +4,9 @@
   "version": "0.1.0",
   "scripts": {
     "docker:up": "docker compose up -d admin-db adminer",
+    "docker:up:all": "docker compose up -d admin-db scout-db adminer",
     "docker:down": "docker compose down",
-    "docker:logs": "docker compose logs -f admin-db",
+    "docker:logs": "docker compose logs -f admin-db scout-db",
     "prisma:generate": "prisma generate",
     "prisma:generate:scout": "prisma generate --schema=prisma/scout/schema.prisma",
     "prisma:generate:all": "npm run prisma:generate && npm run prisma:generate:scout",
@@ -14,12 +15,16 @@
     "prisma:db-pull": "prisma db pull",
     "prisma:migrate:deploy": "prisma migrate deploy",
     "prisma:migrate:status": "prisma migrate status",
-    "scout:readonly:test": "node scripts/test-scout-readonly.mjs"
+    "scout:local:setup": "node scripts/setup-local-scout-db.mjs",
+    "scout:readonly:test": "node scripts/test-scout-readonly.mjs",
+    "scout:write:test": "node scripts/test-scout-write-scope.mjs"
   },
   "dependencies": {
     "@prisma/client": "^6.7.0"
   },
   "devDependencies": {
+    "dotenv": "^17.3.1",
+    "pg": "^8.20.0",
     "prisma": "^6.7.0"
   }
 }

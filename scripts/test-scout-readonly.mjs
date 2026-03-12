@@ -7,6 +7,7 @@
  */
 
 import { PrismaClient } from "@prisma/scout-client"
+import "dotenv/config"
 
 const scoutUrl = process.env.SCOUT_DB_READONLY_URL
 

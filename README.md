@@ -32,6 +32,7 @@ cp .env.example .env
 - `ADMIN_DATABASE_URL`
 - `ADMIN_DATABASE_URL_POOLED`
 - `SCOUT_DB_READONLY_URL`
+- `SCOUT_DB_WRITE_URL`
 - `NEXTAUTH_SECRET`
 - `NEXTAUTH_URL`
 
@@ -48,7 +49,7 @@ npm run prisma:migrate:status
 
 ### Local Docker (Optional)
 
-Start local DB + Adminer:
+Start local Admin DB + Adminer:
 
 ```bash
 npm run docker:up
@@ -56,8 +57,20 @@ npm run docker:up
 
 Service defaults:
 
-- Postgres: `localhost:55434`
+- Admin Postgres: `localhost:55434`
 - Adminer: `http://localhost:8080`
+
+Start Admin + Scout local DBs + Adminer:
+
+```bash
+npm run docker:up:all
+```
+
+Bootstrap local Scout schema and scoped roles:
+
+```bash
+npm run scout:local:setup
+```
 
 Stop services:
 
@@ -75,8 +88,11 @@ npm run docker:down
 - `npm run prisma:db-pull`
 - `npm run prisma:migrate:deploy`
 - `npm run prisma:migrate:status`
+- `npm run scout:local:setup`
 - `npm run scout:readonly:test`
+- `npm run scout:write:test`
 - `npm run docker:up`
+- `npm run docker:up:all`
 - `npm run docker:logs`
 - `npm run docker:down`
 
@@ -124,3 +140,6 @@ Shared standards and design notes live in:
   - Separate Scout Prisma schema/client (`@prisma/scout-client`)
   - `scoutDb` read-only connection layer
   - Read/write permission verification script
+- `CA-15` Set up scoped write connection to Scout
+  - `scoutWriteDb` scoped-write connection layer
+  - Status-only permission verification script

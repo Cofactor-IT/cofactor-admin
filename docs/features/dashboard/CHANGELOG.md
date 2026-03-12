@@ -7,3 +7,4 @@
 - Added card-based dashboard components for stat cards, module previews, and activity feed
 - Added graceful empty states for counts and recent activity
 - Added linked preview panels so the dashboard surfaces real submission, deal, and scout rows instead of counts only
+- Reworked the dashboard into a denser card board instead of a simple top-down stack

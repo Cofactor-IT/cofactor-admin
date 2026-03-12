@@ -384,10 +384,35 @@
     gap: 16px;
   }
 
-  .admin-dashboard-preview-grid {
+  .admin-dashboard-board {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 2fr) minmax(320px, 1fr);
     gap: 16px;
+    align-items: start;
+  }
+
+  .admin-dashboard-primary-column {
+    display: grid;
+    gap: 16px;
+    min-width: 0;
+  }
+
+  .admin-dashboard-side-column {
+    min-width: 0;
+  }
+
+  .admin-dashboard-secondary-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .admin-dashboard-module-card {
+    height: 100%;
+  }
+
+  .admin-dashboard-card-tall .admin-card-body {
+    min-height: 280px;
   }
 
   .admin-dashboard-stat-link {

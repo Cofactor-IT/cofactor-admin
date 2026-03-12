@@ -26,15 +26,33 @@ interface DashboardOverviewProps {
  * @returns Dashboard overview layout
  */
 export function DashboardOverview(props: DashboardOverviewProps) {
+  const [submissionSection, dealSection, scoutSection] = props.previews
+
   return (
     <section className="admin-content-stack">
       <div className="admin-dashboard-grid">
         {props.stats.map((stat) => <DashboardStatCard key={stat.title} {...stat} />)}
       </div>
-      <div className="admin-dashboard-preview-grid">
-        {props.previews.map((section) => <DashboardPreviewSection key={section.title} section={section} />)}
+      <div className="admin-dashboard-board">
+        <div className="admin-dashboard-primary-column">
+          {submissionSection ? (
+            <DashboardPreviewSection
+              section={submissionSection}
+              className="admin-dashboard-card-tall"
+            />
+          ) : null}
+          <div className="admin-dashboard-secondary-row">
+            {dealSection ? <DashboardPreviewSection section={dealSection} /> : null}
+            {scoutSection ? <DashboardPreviewSection section={scoutSection} /> : null}
+          </div>
+        </div>
+        <div className="admin-dashboard-side-column">
+          <DashboardActivityFeed
+            items={props.activity}
+            className="admin-dashboard-card-tall"
+          />
+        </div>
       </div>
-      <DashboardActivityFeed items={props.activity} />
     </section>
   )
 }

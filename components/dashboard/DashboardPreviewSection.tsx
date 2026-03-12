@@ -10,6 +10,7 @@ import { Card } from "../ui/Card"
 
 interface DashboardPreviewSectionProps {
   section: DashboardPreviewSectionModel
+  className?: string
 }
 
 function emptyState(message: string) {
@@ -39,10 +40,11 @@ function itemList(items: DashboardPreviewSectionModel["items"]) {
  * @returns Linked preview card
  */
 export function DashboardPreviewSection(props: DashboardPreviewSectionProps) {
+  const cardClassName = props.className ? `admin-dashboard-module-card ${props.className}` : "admin-dashboard-module-card"
   const { section } = props
 
   return (
-    <Card>
+    <Card className={cardClassName}>
       <Card.Header className="admin-preview-header">
         <div className="admin-preview-heading">
           <h3 className="m-0">{section.title}</h3>

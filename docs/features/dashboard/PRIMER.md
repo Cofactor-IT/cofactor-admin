@@ -15,6 +15,13 @@ Give analysts an immediate at-a-glance landing page after sign-in.
 - Scout Profiles preview
 - Recent Activity feed for submission and deal changes
 
+## Layout Direction
+
+- Dashboard uses a card-board layout, not a simple vertical report
+- Submission Queue is the primary large card
+- Deal Pipeline and Scout Profiles sit as secondary cards beneath it
+- Recent Activity sits in its own side card for persistent scanning
+
 ## Data Sources
 
 - Scout read-only database:

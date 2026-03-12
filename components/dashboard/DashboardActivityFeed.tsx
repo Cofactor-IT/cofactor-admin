@@ -10,6 +10,7 @@ import { Card } from "../ui/Card"
 
 interface DashboardActivityFeedProps {
   items: DashboardActivityItem[]
+  className?: string
 }
 
 function emptyActivityState() {
@@ -46,8 +47,9 @@ function activityList(items: DashboardActivityItem[]) {
  * @returns Activity feed card with empty state fallback
  */
 export function DashboardActivityFeed(props: DashboardActivityFeedProps) {
+  const cardClassName = props.className ? `admin-dashboard-module-card ${props.className}` : "admin-dashboard-module-card"
   return (
-    <Card>
+    <Card className={cardClassName}>
       <Card.Header>
         <h3 className="m-0">Recent Activity</h3>
       </Card.Header>

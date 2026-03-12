@@ -28,7 +28,7 @@ prisma/
 
 lib/database/
 |-- adminDb.ts               # Read/write Prisma client for Admin DB
-`-- scoutDb.ts               # Placeholder for next task (read-only Scout client)
+`-- scoutDb.ts               # Read-only Scout client (implemented in CA-14)
 
 prisma/migrations/20260312_init/
 `-- migration.sql            # Initial schema DDL and constraints

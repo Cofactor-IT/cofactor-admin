@@ -7,10 +7,14 @@
     "docker:down": "docker compose down",
     "docker:logs": "docker compose logs -f admin-db",
     "prisma:generate": "prisma generate",
+    "prisma:generate:scout": "prisma generate --schema=prisma/scout/schema.prisma",
+    "prisma:generate:all": "npm run prisma:generate && npm run prisma:generate:scout",
     "prisma:format": "prisma format",
+    "prisma:format:scout": "prisma format --schema=prisma/scout/schema.prisma",
     "prisma:db-pull": "prisma db pull",
     "prisma:migrate:deploy": "prisma migrate deploy",
-    "prisma:migrate:status": "prisma migrate status"
+    "prisma:migrate:status": "prisma migrate status",
+    "scout:readonly:test": "node scripts/test-scout-readonly.mjs"
   },
   "dependencies": {
     "@prisma/client": "^6.7.0"

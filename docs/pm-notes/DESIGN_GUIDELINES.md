@@ -1,7 +1,7 @@
 # Cofactor Admin - Design Guidelines
 
 **Audience:** Developers, Designers  
-**Last Updated:** 2026-03-11  
+**Last Updated:** 2026-03-12  
 **Base:** Extends Cofactor Scout design guidelines
 
 ---
@@ -103,6 +103,15 @@ Admin is compact by default:
 - Card padding: `p-[16px] md:p-[24px]`
 - Layout gaps: `gap-2 md:gap-4`
 - Input height: `h-[36px] px-[12px]`
+- Input text: `14px` (compact by default)
+
+Admin input contrast/focus defaults:
+
+- Base border: `--admin-border-strong`
+- Hover border: higher-contrast navy-blue tint
+- Focus border: `--admin-focus` with subtle teal ring
+- Validation error border: `--admin-error-strong` with a red focus ring
+- Validation error label/helper text: `--admin-error`
 
 Avoid Scout's spacious defaults in dense Admin views.
 

@@ -35,6 +35,14 @@ cp .env.example .env
 - `SCOUT_DB_WRITE_URL`
 - `NEXTAUTH_SECRET`
 - `NEXTAUTH_URL`
+- `PASSWORD_RESET_TOKEN_TTL_MINUTES`
+- `PASSWORD_RESET_DEV_SHOW_LINK`
+- `SMTP_HOST`
+- `SMTP_PORT`
+- `SMTP_SECURE`
+- `SMTP_USER`
+- `SMTP_PASSWORD`
+- `SMTP_FROM`
 
 ## Database Workflows
 
@@ -184,7 +192,14 @@ Both run:
 - `CA-8` Sign in
   - NextAuth credentials sign-in with lockout and rate limiting
   - Protected-route middleware and session wiring
+- `CA-12` Session management
+  - JWT session strategy with 7-day `maxAge` and 24-hour `updateAge`
+  - Explicit session token cookie hardening (`httpOnly`, `sameSite`, `secure`, `path`)
 - `CA-10` Role assignment
   - Role stored on User and embedded in JWT/session claims
   - IT-only account creation enforced in route middleware and server action
   - Shared role guard helpers for IT and analyst-level authorization
+- `CA-11` Password reset
+  - `/auth/forgot-password` request flow with generic anti-enumeration messaging
+  - `/auth/reset-password` token + expiry validation with one-time token consumption
+  - SMTP-driven reset email support with optional local dev reset-link display

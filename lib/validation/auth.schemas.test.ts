@@ -5,7 +5,7 @@
  */
 
 import { describe, expect, it } from "vitest"
-import { signInSchema, signUpSchema } from "./auth.schemas"
+import { forgotPasswordSchema, resetPasswordSchema, signInSchema, signUpSchema } from "./auth.schemas"
 
 describe("signUpSchema", () => {
   it("accepts @cofactor.world emails", () => {
@@ -39,6 +39,27 @@ describe("signInSchema", () => {
     const result = signInSchema.safeParse({
       email: "someone@example.com",
       password: "password",
+    })
+
+    expect(result.success).toBe(false)
+  })
+})
+
+describe("forgotPasswordSchema", () => {
+  it("accepts valid cofactor email", () => {
+    const result = forgotPasswordSchema.safeParse({
+      email: "ops@cofactor.world",
+    })
+
+    expect(result.success).toBe(true)
+  })
+})
+
+describe("resetPasswordSchema", () => {
+  it("requires token and strong password", () => {
+    const result = resetPasswordSchema.safeParse({
+      token: "short-token",
+      password: "weak",
     })
 
     expect(result.success).toBe(false)

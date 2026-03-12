@@ -9,31 +9,46 @@ datasource db {
 }
 
 model User {
-  id            String        @id @default(cuid())
-  name          String
-  email         String        @unique
-  passwordHash  String
-  role          Role          @default(ANALYST)
-  isActive      Boolean       @default(true)
-  failedLoginAttempts Int     @default(0)
-  lockedUntil   DateTime?
-  emailVerified DateTime?
-  image         String?
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-  createdById   String?
-  accounts      Account[]
-  auditLogs     AuditLog[]
-  deals         Deal[]        @relation("DealOwner")
-  interactions  Interaction[]
-  notes         Note[]
-  sessions      Session[]
-  createdBy     User?         @relation("CreatedBy", fields: [createdById], references: [id])
-  createdUsers  User[]        @relation("CreatedBy")
+  id                  String               @id @default(cuid())
+  name                String
+  email               String               @unique
+  passwordHash        String
+  role                Role                 @default(ANALYST)
+  isActive            Boolean              @default(true)
+  failedLoginAttempts Int                  @default(0)
+  lockedUntil         DateTime?
+  emailVerified       DateTime?
+  image               String?
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  createdById         String?
+  accounts            Account[]
+  auditLogs           AuditLog[]
+  deals               Deal[]               @relation("DealOwner")
+  interactions        Interaction[]
+  notes               Note[]
+  passwordResetTokens PasswordResetToken[]
+  sessions            Session[]
+  createdBy           User?                @relation("CreatedBy", fields: [createdById], references: [id])
+  createdUsers        User[]               @relation("CreatedBy")
 
   @@index([role])
   @@index([isActive])
   @@index([lockedUntil])
+}
+
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  userId    String
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@index([usedAt])
 }
 
 model Account {

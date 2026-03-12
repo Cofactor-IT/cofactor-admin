@@ -791,6 +791,17 @@ Real examples:
 - docs(auth): add TECHNICAL.md
 - fix(auth): resolve merge conflict on signup page
 
+### Dual Remote Workflow (Bitbucket + GitHub)
+- This repository uses two remotes:
+- `origin` = Bitbucket (primary operational remote)
+- `github` = GitHub (mirror/PR remote)
+- Verify remotes with `git remote -v` before first push on a machine.
+- Push feature branches to both remotes:
+- `git push -u origin <branch>`
+- `git push -u github <branch>`
+- Open PR/MR from the same branch into `main` on both platforms unless told otherwise.
+- Keep branch names identical across both remotes.
+
 ### Before Opening a PR
 - [ ] CODE_STANDARDS.md rules followed
 - [ ] JSDoc comments on every exported function
@@ -812,4 +823,4 @@ Real examples:
 
 **Questions?** Read CODE_STANDARDS.md in docs/pm-notes/
 
-**Last Updated:** 2026-02-27
+**Last Updated:** 2026-03-12

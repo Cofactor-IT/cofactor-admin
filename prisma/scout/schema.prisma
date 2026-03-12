@@ -1,0 +1,350 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../../node_modules/@prisma/scout-client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("SCOUT_DB_READONLY_URL")
+}
+
+// ============================================
+// ENUMS
+// ============================================
+
+/// Platform access level for users.
+/// CONTRIBUTOR: Default role, can submit research leads.
+/// SCOUT: Verified role with higher commission, requires application.
+/// ADMIN: Full platform access for team members.
+enum Role {
+  CONTRIBUTOR
+  SCOUT
+  ADMIN
+}
+
+/// Academic or professional role of user.
+/// Used in scout applications to understand background.
+enum UserRole {
+  PHD_STUDENT
+  POSTDOC
+  PROFESSOR
+  INDUSTRY_RESEARCHER
+  INDEPENDENT_RESEARCHER
+  OTHER
+}
+
+/// Scout application workflow status.
+/// NOT_APPLIED: Default state for new users.
+/// PENDING: Application submitted, awaiting team review.
+/// APPROVED: Promoted to SCOUT role.
+/// REJECTED: Application denied, can reapply after 30 days.
+enum ScoutApplicationStatus {
+  NOT_APPLIED
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+/// Research submission pipeline stages.
+/// PENDING_RESEARCH: Initial submission, awaiting team review.
+/// VALIDATING: Team is verifying research quality.
+/// PITCHED_MATCHMAKING: Presented to potential investors.
+/// MATCH_MADE: Successfully matched with investor.
+/// REJECTED: Did not meet quality standards.
+enum SubmissionStatus {
+  PENDING_RESEARCH
+  VALIDATING
+  PITCHED_MATCHMAKING
+  MATCH_MADE
+  REJECTED
+}
+
+/// Career stage of researcher being submitted.
+/// Used to assess research maturity and credibility.
+enum CareerStage {
+  UNDERGRAD_STUDENT
+  PHD_STUDENT
+  POSTDOC
+  PROFESSOR
+  INDUSTRY_RESEARCHER
+  INDEPENDENT_RESEARCHER
+  OTHER
+}
+
+/// Research maturity level.
+/// Indicates how developed the research is.
+enum ResearchStage {
+  EARLY_CONCEPT
+  ACTIVE_RESEARCH
+  HAS_RESULTS
+  PUBLISHED
+}
+
+/// Funding status of research project.
+/// Helps determine investment readiness.
+enum FundingStatus {
+  NOT_SEEKING
+  SEEKING_SEED
+  SEEKING_SERIES_A
+  GRANT_FUNDED
+  INDUSTRY_FUNDED
+  VC_BACKED
+}
+
+/// How the scout discovered this research lead.
+/// Used for quality tracking and scout evaluation.
+enum SubmissionSource {
+  CONFERENCE
+  ACADEMIC_PAPER
+  LINKEDIN
+  PERSONAL_CONNECTION
+  LAB_VISIT
+  OTHER
+}
+
+/// Scout's relationship to the researcher.
+/// Affects credibility and conflict of interest assessment.
+enum Relationship {
+  LAB_MATE
+  CLASSMATE
+  COLLEAGUE
+  NO_RELATIONSHIP
+  OTHER
+}
+
+// ============================================
+// MODELS
+// ============================================
+
+/// User account and authentication data.
+/// Stores credentials, profile information, and scout application status.
+/// Role determines access level and commission rates.
+model User {
+  // Core Identity
+  id            String  @id @default(cuid())
+  /// Email address, normalized to lowercase to prevent duplicates
+  email         String  @unique
+  /// Bcrypt hashed password with cost factor 10. Never stored in plain text.
+  password      String
+  fullName      String
+  firstName     String
+  lastName      String
+  preferredName String?
+  role          Role    @default(CONTRIBUTOR)
+
+  // Authentication
+  /// Timestamp when email was verified. Null if not verified.
+  emailVerified       DateTime?
+  /// Secure token sent in verification email. Expires after 24 hours.
+  verificationToken   String?   @unique
+  verificationExpires DateTime?
+  /// Number of consecutive failed login attempts. Resets on successful login.
+  failedLoginAttempts Int       @default(0)
+  /// Account locks after 5 failed attempts for 15 minutes.
+  lockedUntil         DateTime?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  // Scout Profile (populated via scout application)
+  university               String?
+  department               String?
+  linkedinUrl              String?
+  /// Academic or professional role
+  userRole                 UserRole?
+  /// Custom role description if userRole is OTHER
+  userRoleOther            String?
+  researchAreas            String?
+  whyScout                 String?
+  howSourceLeads           String?
+  /// Uploaded resume file name for scout application
+  scoutResumeFileName      String?
+  /// MIME type for uploaded resume document
+  scoutResumeMimeType      String?
+  /// Binary resume document for admin review
+  scoutResumeData          Bytes?
+  /// Uploaded cover letter file name (optional)
+  scoutCoverLetterFileName String?
+  /// MIME type for uploaded cover letter document
+  scoutCoverLetterMimeType String?
+  /// Binary cover letter document for admin review
+  scoutCoverLetterData     Bytes?
+  scoutApplicationStatus   ScoutApplicationStatus @default(NOT_APPLIED)
+  /// Date when scout application was submitted
+  scoutApplicationDate     DateTime?
+  scoutApprovedAt          DateTime?
+
+  // Profile Settings
+  bio               String?
+  personalWebsite   String?
+  /// JSON array of additional social/professional links
+  additionalLinks   Json?
+  profilePictureUrl String?
+
+  // Account Security
+  /// Two-factor authentication enabled flag (schema ready, not implemented)
+  twoFactorEnabled Boolean @default(false)
+  /// TOTP secret for 2FA (schema ready, not implemented)
+  twoFactorSecret  String?
+
+  // Stats
+  /// Total research submissions (drafts + submitted)
+  totalSubmissions    Int @default(0)
+  /// Submissions in PENDING_RESEARCH or VALIDATING status
+  pendingSubmissions  Int @default(0)
+  /// Submissions in MATCH_MADE status
+  approvedSubmissions Int @default(0)
+
+  // Relations
+  submissions    ResearchSubmission[]
+  comments       SubmissionComment[]
+  passwordResets PasswordReset[]
+
+  @@index([email])
+  @@index([role])
+  @@index([scoutApplicationStatus])
+  @@index([createdAt])
+}
+
+/// Temporary scout application data for unauthenticated users.
+/// Persisted through signup completion, then deleted.
+model ScoutApplicationDraft {
+  id                  String   @id @default(cuid())
+  token               String   @unique
+  name                String
+  email               String
+  university          String
+  department          String
+  linkedinUrl         String?
+  userRole            UserRole
+  userRoleOther       String?
+  researchAreas       String
+  whyScout            String
+  howSourceLeads      String
+  resumeFileName      String
+  resumeMimeType      String
+  resumeData          Bytes
+  coverLetterFileName String?
+  coverLetterMimeType String?
+  coverLetterData     Bytes?
+  createdAt           DateTime @default(now())
+  expiresAt           DateTime
+
+  @@index([email])
+  @@index([expiresAt])
+}
+
+/// Research lead submission with 3-step form workflow.
+/// Step 1: Research summary and researcher contact info.
+/// Step 2: Additional details about research maturity and funding.
+/// Step 3: Scout's pitch on why this is interesting.
+model ResearchSubmission {
+  // Core
+  id          String           @id @default(cuid())
+  userId      String
+  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status      SubmissionStatus @default(PENDING_RESEARCH)
+  /// True if submission is still being edited, false after submission
+  isDraft     Boolean          @default(false)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  /// Timestamp when draft was converted to submission
+  submittedAt DateTime?
+
+  // Step 1 - Research Summary
+  researchTopic         String?
+  researchDescription   String?
+  researcherName        String?
+  researcherEmail       String?
+  researcherInstitution String?
+  researcherDepartment  String?
+
+  // Step 2 - Additional Details
+  researcherCareerStage      CareerStage?
+  /// Custom career stage if researcherCareerStage is OTHER
+  researcherCareerStageOther String?
+  researcherLinkedin         String?
+  researchStage              ResearchStage?
+  fundingStatus              FundingStatus?
+  keyPublications            String?
+  potentialApplications      String?
+  /// JSON array of supporting URLs
+  supportingLinks            Json?             @default("[]")
+  submissionSource           SubmissionSource?
+  relationshipToResearcher   Relationship?
+  /// Whether researcher knows they're being submitted
+  researcherAwareness        Boolean           @default(false)
+
+  // Step 3 - Scout Pitch
+  whyInteresting String?
+
+  // System
+  /// Flagged by duplicate detection system
+  isDuplicate Boolean @default(false)
+  /// ID of original submission if this is a duplicate
+  duplicateOf String?
+
+  // Relations
+  comments SubmissionComment[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([isDraft])
+  @@index([researcherEmail])
+  @@index([createdAt])
+  @@index([submittedAt])
+}
+
+/// Comments on research submissions.
+/// Used for team collaboration and feedback.
+model SubmissionComment {
+  id           String             @id @default(cuid())
+  submissionId String
+  submission   ResearchSubmission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  userId       String
+  user         User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  content      String
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+
+  @@index([submissionId])
+  @@index([userId])
+}
+
+/// Password reset tokens with 1-hour expiration.
+/// Tokens are deleted after use or expiration.
+model PasswordReset {
+  id        String   @id @default(cuid())
+  /// Secure random token sent in password reset email
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  /// Token expires after 1 hour
+  expires   DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([token])
+}
+
+/// Global system settings.
+/// Currently unused, reserved for future admin configuration.
+model SystemSettings {
+  id                       String   @id @default(cuid())
+  enableEmailNotifications Boolean  @default(true)
+  enableInAppNotifications Boolean  @default(true)
+  scoutNotificationEmail   String?  @default("it@cofactor.world")
+  updatedAt                DateTime @updatedAt
+}
+
+// User consent records for GDPR compliance
+model ConsentRecord {
+  id        String   @id @default(cuid())
+  userId    String?
+  analytics Boolean
+  error     Boolean
+  userAgent String?
+  ipAddress String?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}

@@ -266,6 +266,7 @@
 
   .admin-root {
     min-height: 100vh;
+    min-width: 1024px;
     background: var(--admin-bg);
     color: var(--admin-text-primary);
   }
@@ -295,6 +296,14 @@
     justify-content: space-between;
     border-bottom: 1px solid var(--admin-border);
     padding: 0 32px;
+  }
+
+  .admin-page-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    min-width: 0;
   }
 
   .admin-page-content {
@@ -525,19 +534,4 @@
     border-color: var(--admin-border);
   }
 
-  @media (max-width: 1023px) {
-    .admin-sidebar {
-      width: 72px;
-    }
-
-    .admin-page {
-      margin-left: 72px;
-    }
-
-    .admin-page-header,
-    .admin-page-content {
-      padding-left: 16px;
-      padding-right: 16px;
-    }
-  }
 }

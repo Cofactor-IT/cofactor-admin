@@ -204,6 +204,10 @@ Both run:
   - Role stored on User and embedded in JWT/session claims
   - IT-only account creation enforced in route middleware and server action
   - Shared role guard helpers for IT and analyst-level authorization
+- `CA-35` Base page layout shell
+  - Shared `AdminShell` for protected pages
+  - Fixed `240px` sidebar offset with title/actions header pattern
+  - Consistent desktop content padding and global Admin background
 - `CA-11` Password reset
   - `/auth/forgot-password` request flow with generic anti-enumeration messaging
   - `/auth/reset-password` token + expiry validation with one-time token consumption

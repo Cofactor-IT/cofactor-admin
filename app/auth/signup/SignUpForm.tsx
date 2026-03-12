@@ -112,7 +112,7 @@ export function SignUpForm() {
           {state.success ? (
             <TextButton href="/auth/signup">Create another account</TextButton>
           ) : (
-            <TextButton href="/submissions">Back to submissions</TextButton>
+            <TextButton href="/dashboard">Back to dashboard</TextButton>
           )}
         </div>
       </form>

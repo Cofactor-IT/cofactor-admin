@@ -8,7 +8,15 @@ import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 import { getToken } from "next-auth/jwt"
 
-const PUBLIC_PATHS = new Set(["/auth/signin", "/auth/forgot-password", "/auth/reset-password"])
+const DASHBOARD_PATH = "/dashboard"
+const SIGN_IN_PATH = "/signin"
+const PUBLIC_PATHS = new Set([SIGN_IN_PATH, "/auth/forgot-password", "/auth/reset-password"])
+const ROUTE_REDIRECTS = new Map([
+  ["/auth/signin", SIGN_IN_PATH],
+  ["/scout-profiles", "/scouts"],
+  ["/deal-pipeline", "/pipeline"],
+  ["/email-templates", "/templates"],
+])
 const IT_ONLY_PATH_PREFIXES = ["/settings", "/auth/signup"]
 
 function isPublicPath(pathname: string): boolean {
@@ -29,19 +37,30 @@ function isITOnlyPath(pathname: string): boolean {
  */
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
+  const redirectedPath = ROUTE_REDIRECTS.get(pathname)
+  if (redirectedPath) {
+    const redirectUrl = new URL(redirectedPath, request.url)
+    redirectUrl.search = request.nextUrl.search
+    return NextResponse.redirect(redirectUrl)
+  }
+
+  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET })
+  if (pathname === SIGN_IN_PATH && token) {
+    return NextResponse.redirect(new URL(DASHBOARD_PATH, request.url))
+  }
+
   if (isPublicPath(pathname)) {
     return NextResponse.next()
   }
 
-  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET })
   if (!token) {
-    const signInUrl = new URL("/auth/signin", request.url)
+    const signInUrl = new URL(SIGN_IN_PATH, request.url)
     signInUrl.searchParams.set("callbackUrl", `${pathname}${request.nextUrl.search}`)
     return NextResponse.redirect(signInUrl)
   }
 
   if (isITOnlyPath(pathname) && token.role !== "IT") {
-    return NextResponse.redirect(new URL("/submissions", request.url))
+    return NextResponse.redirect(new URL(DASHBOARD_PATH, request.url))
   }
 
   return NextResponse.next()

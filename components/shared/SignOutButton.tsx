@@ -27,7 +27,7 @@ export function SignOutButton() {
     setIsPending(true)
     await clearClientAuthState()
     await logSignOutAuditAction().catch(() => undefined)
-    await signOut({ callbackUrl: "/auth/signin" })
+    await signOut({ callbackUrl: "/signin" })
     setIsPending(false)
   }
 

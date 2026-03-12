@@ -1,31 +1,16 @@
 /**
  * page.tsx
  *
- * Server page wrapper for Admin sign-in form.
+ * Compatibility redirect for legacy sign-in path.
  */
 
-import { SignInForm } from "./SignInForm"
-
-interface SignInPageProps {
-  searchParams?: Promise<Record<string, string | string[] | undefined>>
-}
-
-function getFirstParamValue(value: string | string[] | undefined): string | undefined {
-  if (typeof value === "string") return value
-  if (Array.isArray(value)) return value[0]
-  return undefined
-}
+import { redirect } from "next/navigation"
 
 /**
- * Renders credentials sign-in page with request-provided callback/error params.
+ * Redirects legacy `/auth/signin` traffic to `/signin`.
  *
- * @param props - Route search params
- * @returns Sign-in page UI
+ * @returns Never returns; forwards to `/signin`
  */
-export default async function SignInPage(props: SignInPageProps) {
-  const params = (await props.searchParams) ?? {}
-  const callbackUrl = getFirstParamValue(params.callbackUrl) ?? "/submissions"
-  const errorCode = getFirstParamValue(params.error)
-
-  return <SignInForm callbackUrl={callbackUrl} errorCode={errorCode} />
+export default function LegacySignInPage() {
+  redirect("/signin")
 }

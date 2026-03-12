@@ -1,25 +1,30 @@
 /**
  * page.tsx
  *
- * Submissions workspace placeholder page for authenticated Admin users.
+ * Deal Pipeline workspace placeholder page.
  */
 
-import { requireAuthSession } from "../../lib/auth/session"
 import { AdminShell } from "../../components/shared/AdminShell"
 import { WorkspacePlaceholder } from "../../components/shared/WorkspacePlaceholder"
+import { requireAuthSession } from "../../lib/auth/session"
 
-export default async function SubmissionsPage() {
+/**
+ * Renders the Deal Pipeline workspace shell.
+ *
+ * @returns Protected placeholder page
+ */
+export default async function PipelinePage() {
   const session = await requireAuthSession()
   const userName = session.user.name ?? session.user.email ?? "Team Member"
 
   return (
     <AdminShell
-      pageTitle="Submissions"
-      activePath="/submissions"
+      pageTitle="Deal Pipeline"
+      activePath="/pipeline"
       userName={userName}
       userRole={session.user.role}
     >
-      <WorkspacePlaceholder title="Submissions" description="Coming soon." />
+      <WorkspacePlaceholder title="Deal Pipeline" description="Coming soon." />
     </AdminShell>
   )
 }

@@ -1,33 +1,16 @@
 /**
  * page.tsx
  *
- * Deal Pipeline workspace placeholder page.
+ * Compatibility redirect for legacy pipeline route.
  */
 
-import { AdminShell } from "../../components/shared/AdminShell"
-import { WorkspacePlaceholder } from "../../components/shared/WorkspacePlaceholder"
-import { requireAuthSession } from "../../lib/auth/session"
+import { redirect } from "next/navigation"
 
 /**
- * Renders the Deal Pipeline workspace shell.
+ * Redirects legacy `/deal-pipeline` traffic to `/pipeline`.
  *
- * @returns Protected placeholder page
+ * @returns Never returns; forwards to `/pipeline`
  */
-export default async function DealPipelinePage() {
-  const session = await requireAuthSession()
-  const userName = session.user.name ?? session.user.email ?? "Team Member"
-
-  return (
-    <AdminShell
-      pageTitle="Deal Pipeline"
-      activePath="/deal-pipeline"
-      userName={userName}
-      userRole={session.user.role}
-    >
-      <WorkspacePlaceholder
-        title="Deal pipeline"
-        description="Deal stage progression, ownership, and internal review workflow will appear in this workspace."
-      />
-    </AdminShell>
-  )
+export default function LegacyDealPipelinePage() {
+  redirect("/pipeline")
 }

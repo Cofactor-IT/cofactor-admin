@@ -61,16 +61,14 @@ Admin navigation uses a persistent left sidebar as the primary wayfinding patter
   </div>
 
   <nav className="flex-1 px-[12px] py-[16px] flex flex-col gap-[4px]">
+    <NavItem href="/dashboard" icon={DashboardGrid} label="Dashboard" />
     <NavItem href="/submissions" icon={FileStack} label="Submissions" />
-    <NavItem href="/scout-profiles" icon={Users} label="Scout Profiles" />
+    <NavItem href="/scouts" icon={Users} label="Scout Profiles" />
     <NavItem href="/crm" icon={ContactCard} label="CRM" />
-    <NavItem href="/deal-pipeline" icon={Pipeline} label="Deal Pipeline" />
-    <NavItem href="/email-templates" icon={Mail} label="Email Templates" />
+    <NavItem href="/pipeline" icon={Pipeline} label="Deal Pipeline" />
+    <NavItem href="/templates" icon={Mail} label="Email Templates" />
   </nav>
 
-  <div className="h-[64px] flex items-center px-[24px] border-t border-[var(--admin-border)]">
-    <span className="caption text-[var(--admin-text-secondary)]">User Name - ROLE</span>
-  </div>
 </aside>
 ```
 
@@ -103,6 +101,7 @@ Base page shell rules:
 - Sidebar width is fixed at `240px`
 - Main content shell uses `ml-[240px]`
 - Header always uses title-left / actions-right alignment
+- Authenticated user identity lives in the top-right of the page header, not in the sidebar
 - Content padding defaults to `px-[32px] py-[24px]`
 - Layout is desktop-only and stable from `1024px` upward
 
@@ -152,6 +151,12 @@ Cards should use Admin surfaces:
 ```
 
 White cards are a Scout pattern and should not be used in Admin.
+
+Admin should be card-first by default:
+
+- Prefer organizing page content into clear cards or panels instead of loose free-floating content
+- Use a card even for placeholder and empty states unless there is a strong layout reason not to
+- New implementations should start from the shared `components/ui/Card.tsx` primitive before introducing page-specific wrappers
 
 ---
 

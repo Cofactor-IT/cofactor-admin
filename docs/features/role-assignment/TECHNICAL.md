@@ -29,9 +29,9 @@
 
 ## Route Enforcement
 
-- Middleware now treats only `/auth/signin` and `/api/auth/*` as public.
+- Middleware now uses `/signin` as the canonical public sign-in route.
 - `/auth/signup` requires a valid session.
 - IT-only route prefixes:
   - `/auth/signup`
   - `/settings`
-- Non-IT users hitting IT-only routes are redirected to `/submissions`.
+- Non-IT users hitting IT-only routes are redirected to `/dashboard`.

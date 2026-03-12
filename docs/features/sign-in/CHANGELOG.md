@@ -7,7 +7,7 @@
 ### Added
 
 - NextAuth credentials provider config for Admin auth
-- `/auth/signin` page with generic and lockout-aware errors
+- `/signin` canonical page with generic and lockout-aware errors
 - NextAuth API route (`app/api/auth/[...nextauth]/route.ts`)
 - Protected-route middleware with sign-in redirect
 - In-memory auth rate limiter (`5 attempts / 15 min / IP`)

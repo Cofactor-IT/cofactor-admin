@@ -1,7 +1,7 @@
 /**
  * page.tsx
  *
- * CRM workspace placeholder page.
+ * Default authenticated landing route for Admin.
  */
 
 import { AdminShell } from "../../components/shared/AdminShell"
@@ -9,22 +9,25 @@ import { WorkspacePlaceholder } from "../../components/shared/WorkspacePlacehold
 import { requireAuthSession } from "../../lib/auth/session"
 
 /**
- * Renders the CRM workspace shell.
+ * Renders the default Admin dashboard workspace.
  *
- * @returns Protected placeholder page
+ * @returns Protected dashboard placeholder page
  */
-export default async function CrmPage() {
+export default async function DashboardPage() {
   const session = await requireAuthSession()
   const userName = session.user.name ?? session.user.email ?? "Team Member"
 
   return (
     <AdminShell
-      pageTitle="CRM"
-      activePath="/crm"
+      pageTitle="Dashboard"
+      activePath="/dashboard"
       userName={userName}
       userRole={session.user.role}
     >
-      <WorkspacePlaceholder title="CRM" description="Coming soon." />
+      <WorkspacePlaceholder
+        title="Dashboard"
+        description="Coming soon."
+      />
     </AdminShell>
   )
 }

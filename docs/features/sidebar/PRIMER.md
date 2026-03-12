@@ -10,12 +10,13 @@ Provide a fixed Admin navigation rail that persists across all protected pages.
 - Top wordmark area
 - Five primary navigation items with icons
 - Active and hover visual states
-- Bottom user identity area
+- Lower utility area for Admin-only actions and sign-out
 
 ## Routes
 
+- `/dashboard`
 - `/submissions`
-- `/scout-profiles`
+- `/scouts`
 - `/crm`
-- `/deal-pipeline`
-- `/email-templates`
+- `/pipeline`
+- `/templates`

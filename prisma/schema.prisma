@@ -1,0 +1,226 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("ADMIN_DATABASE_URL_POOLED")
+  directUrl = env("ADMIN_DATABASE_URL")
+}
+
+model User {
+  id            String        @id @default(cuid())
+  name          String
+  email         String        @unique
+  passwordHash  String
+  role          Role          @default(ANALYST)
+  isActive      Boolean       @default(true)
+  emailVerified DateTime?
+  image         String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  createdById   String?
+  accounts      Account[]
+  auditLogs     AuditLog[]
+  deals         Deal[]        @relation("DealOwner")
+  interactions  Interaction[]
+  notes         Note[]
+  sessions      Session[]
+  createdBy     User?         @relation("CreatedBy", fields: [createdById], references: [id])
+  createdUsers  User[]        @relation("CreatedBy")
+
+  @@index([role])
+  @@index([isActive])
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Deal {
+  id                String        @id @default(cuid())
+  scoutSubmissionId String
+  stage             DealStage     @default(INTAKE)
+  ownerId           String
+  notes             String?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+  owner             User          @relation("DealOwner", fields: [ownerId], references: [id])
+  dealContacts      DealContact[]
+  interactions      Interaction[]
+  noteEntries       Note[]
+
+  @@index([scoutSubmissionId])
+  @@index([ownerId])
+  @@index([stage])
+}
+
+model Contact {
+  id           String        @id @default(cuid())
+  name         String
+  email        String?
+  organization String?
+  title        String?
+  type         ContactType
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  dealContacts DealContact[]
+  interactions Interaction[]
+  notes        Note[]
+
+  @@index([type])
+  @@index([email])
+  @@index([organization])
+}
+
+model DealContact {
+  id        String   @id @default(cuid())
+  dealId    String
+  contactId String
+  role      String?
+  isPrimary Boolean  @default(false)
+  createdAt DateTime @default(now())
+  contact   Contact  @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  deal      Deal     @relation(fields: [dealId], references: [id], onDelete: Cascade)
+
+  @@unique([dealId, contactId])
+  @@index([contactId])
+  @@index([isPrimary])
+}
+
+model Interaction {
+  id          String          @id @default(cuid())
+  type        InteractionType
+  summary     String
+  happenedAt  DateTime        @default(now())
+  nextStep    String?
+  nextStepDue DateTime?
+  contactId   String
+  dealId      String?
+  userId      String
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  contact     Contact         @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  deal        Deal?           @relation(fields: [dealId], references: [id])
+  user        User            @relation(fields: [userId], references: [id])
+
+  @@index([contactId])
+  @@index([dealId])
+  @@index([userId])
+  @@index([happenedAt])
+  @@index([nextStepDue])
+}
+
+model Note {
+  id           String     @id @default(cuid())
+  content      String
+  target       NoteTarget
+  submissionId String?
+  dealId       String?
+  contactId    String?
+  authorId     String
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  author       User       @relation(fields: [authorId], references: [id])
+  contact      Contact?   @relation(fields: [contactId], references: [id])
+  deal         Deal?      @relation(fields: [dealId], references: [id])
+
+  @@index([target])
+  @@index([submissionId])
+  @@index([dealId])
+  @@index([contactId])
+  @@index([authorId])
+}
+
+model EmailTemplate {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  subject   String
+  body      String
+  variables String[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model AuditLog {
+  id           String   @id @default(cuid())
+  userId       String?
+  action       String
+  resourceType String
+  resourceId   String
+  changes      Json?
+  ipAddress    String?
+  userAgent    String?
+  createdAt    DateTime @default(now())
+  user         User?    @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([action])
+  @@index([resourceType, resourceId])
+  @@index([createdAt])
+}
+
+enum Role {
+  ANALYST
+  IT
+}
+
+enum DealStage {
+  INTAKE
+  QUALIFY
+  DEEP_DIVE
+  IC_PREP
+  CLOSE
+}
+
+enum ContactType {
+  RESEARCHER
+  INVESTOR
+  SCOUT
+  OTHER
+}
+
+enum InteractionType {
+  CALL
+  EMAIL
+  MEETING
+}
+
+enum NoteTarget {
+  SUBMISSION
+  DEAL
+  CONTACT
+}

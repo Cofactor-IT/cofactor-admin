@@ -1,2 +1,10 @@
-npm run lint
-npm run type-check
+#!/bin/sh
+set -e
+
+echo "Running pre-commit checks..."
+npx lint-staged
+
+echo "Running type check..."
+npx tsc --noEmit
+
+echo "Pre-commit checks passed"

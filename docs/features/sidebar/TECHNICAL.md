@@ -29,6 +29,9 @@ Primary routes in the shell:
 - `/pipeline`
 - `/templates`
 
+`/scouts` is the single Scout domain entry in the sidebar. Applications and Profiles are handled as
+tabs inside the page instead of separate sidebar items.
+
 IT-only utility navigation remains available for `/auth/signup`, but it is not part of the primary sidebar list.
 The visible utility label is shortened to `Team Members` to preserve single-line rhythm in the footer section.
 

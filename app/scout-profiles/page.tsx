@@ -4,7 +4,7 @@
  * Compatibility redirect for legacy scout profiles route.
  */
 
-import { redirect } from "next/navigation"
+import { redirect } from 'next/navigation';
 
 /**
  * Redirects legacy `/scout-profiles` traffic to `/scouts`.
@@ -12,5 +12,5 @@ import { redirect } from "next/navigation"
  * @returns Never returns; forwards to `/scouts`
  */
 export default function LegacyScoutProfilesPage() {
-  redirect("/scouts")
+    redirect('/scouts');
 }

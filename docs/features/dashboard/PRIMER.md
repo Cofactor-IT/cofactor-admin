@@ -10,7 +10,7 @@ Give analysts an immediate at-a-glance landing page after sign-in.
 - Active Submissions
 - Deals in Progress
 - Active Scouts
-- Submissions This Week
+- Scout Applications
 - Submission Queue preview
 - Deal Pipeline preview
 - Scout Profiles preview
@@ -31,9 +31,15 @@ Give analysts an immediate at-a-glance landing page after sign-in.
 - Scout read-only database:
   - active submissions
   - active scouts
-  - submissions this week
+  - pending scout applications
   - stale review detection
   - new submissions since the user's previous visit
+
+## Navigation Intent
+
+- `Active Scouts` links to `/scouts?tab=profiles`
+- `Scout Applications` links to `/scouts?tab=applications`
+- Scout profile previews also land on `/scouts?tab=profiles`
 - Admin database:
   - deals in progress
   - audit-log-based recent activity

@@ -12,3 +12,5 @@
 - Added server-side dashboard greeting logic with priority-based operational signals
 - Added persisted `lastVisitAt` tracking so "since your last visit" uses real prior-visit data
 - Added branded sign-in background treatment with grid texture, glow, and centered wordmark
+- Replaced the duplicate scout summary stat with pending Scout applications from Scout user application status
+- Restored the top-row dashboard mix to active submissions, deals in progress, active scouts, and scout applications

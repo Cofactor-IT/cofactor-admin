@@ -32,10 +32,12 @@ Additional greeting-specific modules:
   - Admin `Deal`
 - Active Scouts:
   - Scout `User`
-  - approved scout application or Scout role
-- Submissions This Week:
-  - Scout `ResearchSubmission`
-  - non-draft submissions created/submitted since the start of the current week
+  - `scoutApplicationStatus = APPROVED`
+- Scout Applications:
+  - Scout `User`
+  - `scoutApplicationStatus = PENDING`
+
+`Submissions This Week` is no longer a top-level stat card. It remains an internal supporting metric used for trend copy on other cards.
 
 ### Recent Activity
 
@@ -55,6 +57,11 @@ Additional greeting-specific modules:
 - Scout Profiles:
   - Scout `User`
   - latest approved Scout accounts
+
+Scout-related dashboard links now target the tabbed Scouts route:
+
+- profile-oriented cards -> `/scouts?tab=profiles`
+- application-oriented cards -> `/scouts?tab=applications`
 
 If `SCOUT_DB_READONLY_URL` is not configured, Scout-backed preview cards stay visible but render empty with a clear fallback message instead of crashing the dashboard.
 

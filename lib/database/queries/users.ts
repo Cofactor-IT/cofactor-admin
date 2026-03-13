@@ -4,41 +4,41 @@
  * User query functions for account lookup and creation.
  */
 
-import { adminDb } from "../adminDb"
+import { adminDb } from '../adminDb';
 
 interface CreateUserParams {
-  name: string
-  email: string
-  passwordHash: string
-  role: "ANALYST" | "IT"
+    name: string;
+    email: string;
+    passwordHash: string;
+    role: 'ANALYST' | 'IT';
 }
 
 interface UpdateFailedLoginAttemptsParams {
-  userId: string
-  failedLoginAttempts: number
-  lockedUntil: Date | null
+    userId: string;
+    failedLoginAttempts: number;
+    lockedUntil: Date | null;
 }
 
 interface AuthUserRecord {
-  id: string
-  name: string
-  email: string
-  passwordHash: string
-  role: "ANALYST" | "IT"
-  isActive: boolean
-  failedLoginAttempts: number
-  lockedUntil: Date | null
+    id: string;
+    name: string;
+    email: string;
+    passwordHash: string;
+    role: 'ANALYST' | 'IT';
+    isActive: boolean;
+    failedLoginAttempts: number;
+    lockedUntil: Date | null;
 }
 
 interface PasswordResetCandidateRecord {
-  id: string
-  name: string
-  email: string
-  isActive: boolean
+    id: string;
+    name: string;
+    email: string;
+    isActive: boolean;
 }
 
 interface LastVisitRecord {
-  lastVisitAt: Date | null
+    lastVisitAt: Date | null;
 }
 
 /**
@@ -48,16 +48,16 @@ interface LastVisitRecord {
  * @returns Minimal user record if found, otherwise null
  */
 export async function findUserByEmail(email: string) {
-  return adminDb.user.findUnique({
-    where: {
-      email: email.toLowerCase(),
-    },
-    select: {
-      id: true,
-      email: true,
-      role: true,
-    },
-  })
+    return adminDb.user.findUnique({
+        where: {
+            email: email.toLowerCase(),
+        },
+        select: {
+            id: true,
+            email: true,
+            role: true,
+        },
+    });
 }
 
 /**
@@ -67,21 +67,21 @@ export async function findUserByEmail(email: string) {
  * @returns Auth user record or null when not found
  */
 export async function findAuthUserByEmail(email: string): Promise<AuthUserRecord | null> {
-  return adminDb.user.findUnique({
-    where: {
-      email: email.toLowerCase(),
-    },
-    select: {
-      id: true,
-      name: true,
-      email: true,
-      passwordHash: true,
-      role: true,
-      isActive: true,
-      failedLoginAttempts: true,
-      lockedUntil: true,
-    },
-  })
+    return adminDb.user.findUnique({
+        where: {
+            email: email.toLowerCase(),
+        },
+        select: {
+            id: true,
+            name: true,
+            email: true,
+            passwordHash: true,
+            role: true,
+            isActive: true,
+            failedLoginAttempts: true,
+            lockedUntil: true,
+        },
+    });
 }
 
 /**
@@ -91,19 +91,19 @@ export async function findAuthUserByEmail(email: string): Promise<AuthUserRecord
  * @returns Candidate record including active status or null
  */
 export async function findPasswordResetCandidateByEmail(
-  email: string,
+    email: string
 ): Promise<PasswordResetCandidateRecord | null> {
-  return adminDb.user.findUnique({
-    where: {
-      email: email.toLowerCase(),
-    },
-    select: {
-      id: true,
-      name: true,
-      email: true,
-      isActive: true,
-    },
-  })
+    return adminDb.user.findUnique({
+        where: {
+            email: email.toLowerCase(),
+        },
+        select: {
+            id: true,
+            name: true,
+            email: true,
+            isActive: true,
+        },
+    });
 }
 
 /**
@@ -113,21 +113,21 @@ export async function findPasswordResetCandidateByEmail(
  * @returns Newly created user record without password hash
  */
 export async function createUser(params: CreateUserParams) {
-  return adminDb.user.create({
-    data: {
-      name: params.name,
-      email: params.email.toLowerCase(),
-      passwordHash: params.passwordHash,
-      role: params.role,
-    },
-    select: {
-      id: true,
-      name: true,
-      email: true,
-      role: true,
-      createdAt: true,
-    },
-  })
+    return adminDb.user.create({
+        data: {
+            name: params.name,
+            email: params.email.toLowerCase(),
+            passwordHash: params.passwordHash,
+            role: params.role,
+        },
+        select: {
+            id: true,
+            name: true,
+            email: true,
+            role: true,
+            createdAt: true,
+        },
+    });
 }
 
 /**
@@ -137,20 +137,20 @@ export async function createUser(params: CreateUserParams) {
  * @returns Updated security state fields
  */
 export async function updateFailedLoginAttempts(params: UpdateFailedLoginAttemptsParams) {
-  return adminDb.user.update({
-    where: {
-      id: params.userId,
-    },
-    data: {
-      failedLoginAttempts: params.failedLoginAttempts,
-      lockedUntil: params.lockedUntil,
-    },
-    select: {
-      id: true,
-      failedLoginAttempts: true,
-      lockedUntil: true,
-    },
-  })
+    return adminDb.user.update({
+        where: {
+            id: params.userId,
+        },
+        data: {
+            failedLoginAttempts: params.failedLoginAttempts,
+            lockedUntil: params.lockedUntil,
+        },
+        select: {
+            id: true,
+            failedLoginAttempts: true,
+            lockedUntil: true,
+        },
+    });
 }
 
 /**
@@ -160,18 +160,18 @@ export async function updateFailedLoginAttempts(params: UpdateFailedLoginAttempt
  * @returns Updated user id
  */
 export async function resetLoginAttempts(userId: string) {
-  return adminDb.user.update({
-    where: {
-      id: userId,
-    },
-    data: {
-      failedLoginAttempts: 0,
-      lockedUntil: null,
-    },
-    select: {
-      id: true,
-    },
-  })
+    return adminDb.user.update({
+        where: {
+            id: userId,
+        },
+        data: {
+            failedLoginAttempts: 0,
+            lockedUntil: null,
+        },
+        select: {
+            id: true,
+        },
+    });
 }
 
 /**
@@ -181,16 +181,16 @@ export async function resetLoginAttempts(userId: string) {
  * @returns Last recorded visit timestamp or null when none exists yet
  */
 export async function findLastVisitAt(userId: string): Promise<Date | null> {
-  const user = await adminDb.user.findUnique({
-    where: {
-      id: userId,
-    },
-    select: {
-      lastVisitAt: true,
-    },
-  }) as LastVisitRecord | null
+    const user = (await adminDb.user.findUnique({
+        where: {
+            id: userId,
+        },
+        select: {
+            lastVisitAt: true,
+        },
+    })) as LastVisitRecord | null;
 
-  return user?.lastVisitAt ?? null
+    return user?.lastVisitAt ?? null;
 }
 
 /**
@@ -200,15 +200,15 @@ export async function findLastVisitAt(userId: string): Promise<Date | null> {
  * @returns Updated user id
  */
 export async function updateLastVisit(userId: string) {
-  return adminDb.user.update({
-    where: {
-      id: userId,
-    },
-    data: {
-      lastVisitAt: new Date(),
-    },
-    select: {
-      id: true,
-    },
-  })
+    return adminDb.user.update({
+        where: {
+            id: userId,
+        },
+        data: {
+            lastVisitAt: new Date(),
+        },
+        select: {
+            id: true,
+        },
+    });
 }

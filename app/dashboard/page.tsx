@@ -5,17 +5,34 @@
  */
 
 import { AdminShell } from "../../components/shared/AdminShell"
-import { WorkspacePlaceholder } from "../../components/shared/WorkspacePlaceholder"
+import { DashboardOverview } from "../../components/dashboard/DashboardOverview"
+import {
+  findDashboardPreviewSections,
+  findDashboardStats,
+  findRecentDashboardActivity,
+} from "../../lib/database/queries/dashboard"
+import { updateLastVisit } from "../../lib/database/queries/users"
 import { requireAuthSession } from "../../lib/auth/session"
+import { buildDashboardGreeting } from "../../lib/utils/greeting"
+
+export const dynamic = "force-dynamic"
 
 /**
- * Renders the default Admin dashboard workspace.
+ * Renders the default Admin dashboard with live counts and activity.
  *
- * @returns Protected dashboard placeholder page
+ * @returns Protected dashboard page
  */
 export default async function DashboardPage() {
   const session = await requireAuthSession()
+  const userId = session.user.id
   const userName = session.user.name ?? session.user.email ?? "Team Member"
+  const [stats, previews, activity, greeting] = await Promise.all([
+    findDashboardStats(),
+    findDashboardPreviewSections(),
+    findRecentDashboardActivity(),
+    buildDashboardGreeting(userId, userName),
+  ])
+  await updateLastVisit(userId)
 
   return (
     <AdminShell
@@ -24,10 +41,7 @@ export default async function DashboardPage() {
       userName={userName}
       userRole={session.user.role}
     >
-      <WorkspacePlaceholder
-        title="Dashboard"
-        description="Coming soon."
-      />
+      <DashboardOverview greeting={greeting} stats={stats} previews={previews} activity={activity} />
     </AdminShell>
   )
 }

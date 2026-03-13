@@ -63,7 +63,7 @@ function utilityItemClass(isActive: boolean): string {
 
 function navIconClassName(isActive: boolean): string {
   if (isActive) return "admin-nav-icon text-[var(--white)]"
-  return "admin-nav-icon text-[var(--admin-text-secondary)]"
+  return "admin-nav-icon text-[rgba(255,255,255,0.8)]"
 }
 
 function DashboardIcon(props: { isActive: boolean }) {
@@ -148,12 +148,13 @@ export function AdminShell(props: AdminShellProps) {
       <aside className="admin-sidebar">
         <div className="admin-sidebar-brand">
           <Image
-            src="/branding/cofactor-admin-placeholder-hero-logo.png"
+            src="/branding/cofactor-header-logo.png"
             alt="Cofactor Admin wordmark"
             width={148}
             height={31}
             priority
           />
+          <span className="admin-sidebar-brand-label">admin</span>
         </div>
 
         <nav className="admin-sidebar-nav">
@@ -172,7 +173,7 @@ export function AdminShell(props: AdminShellProps) {
           {showTeamManagement ? (
             <Link href="/auth/signup" className={utilityItemClass(props.activePath === "/auth/signup")}>
               <UsersIcon isActive={props.activePath === "/auth/signup"} />
-              <span className="label text-inherit">Manage team members</span>
+              <span className="label text-inherit">Team Members</span>
             </Link>
           ) : null}
           <SignOutButton />
@@ -187,7 +188,7 @@ export function AdminShell(props: AdminShellProps) {
             <div className="admin-header-account">
               <div className="admin-header-account-copy">
                 <span className="label text-admin-primary">{props.userName}</span>
-                <span className="caption">{props.userRole}</span>
+                <span className="caption admin-header-role">{props.userRole}</span>
               </div>
               <div className="admin-header-avatar" aria-hidden="true">
                 <span className="label text-[var(--white)]">{userInitials}</span>

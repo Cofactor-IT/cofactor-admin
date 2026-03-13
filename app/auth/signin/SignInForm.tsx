@@ -24,6 +24,17 @@ interface SignInFormProps {
 function resolveErrorMessage(errorCode?: string): string | null {
     if (!errorCode) return null;
     if (errorCode === 'ACCOUNT_LOCKED') return LOCKED_ACCOUNT_MESSAGE;
+    if (errorCode.startsWith('RATE_LIMITED:')) {
+        const retryAfterSeconds = Number(errorCode.split(':')[1] ?? '0');
+        if (retryAfterSeconds >= 60) {
+            const retryAfterMinutes = Math.ceil(retryAfterSeconds / 60);
+            return `Too many sign-in attempts from your network. Try again in ${retryAfterMinutes} minute${
+                retryAfterMinutes === 1 ? '' : 's'
+            }.`;
+        }
+
+        return `Too many sign-in attempts from your network. Try again in ${retryAfterSeconds} seconds.`;
+    }
     if (errorCode === 'RATE_LIMITED') return RATE_LIMIT_MESSAGE;
     return INVALID_CREDENTIALS_MESSAGE;
 }

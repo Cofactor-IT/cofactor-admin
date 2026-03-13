@@ -16,7 +16,8 @@ type AdminRoute =
     | '/crm'
     | '/pipeline'
     | '/templates'
-    | '/auth/signup';
+    | '/auth/signup'
+    | '/settings/audit-log';
 
 interface AdminShellProps {
     pageTitle: string;
@@ -251,6 +252,31 @@ function MailTemplateIcon(props: { isActive: boolean }) {
     );
 }
 
+function AuditTrailIcon(props: { isActive: boolean }) {
+    return (
+        <svg
+            viewBox="0 0 20 20"
+            fill="none"
+            aria-hidden="true"
+            className={navIconClassName(props.isActive)}
+        >
+            <path
+                d="M10 4.25a5.75 5.75 0 1 0 5.75 5.75"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+            />
+            <path
+                d="M10 6.75v3.5l2.25 1.5M10 2.75v1.5M17.25 10h-1.5"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
+        </svg>
+    );
+}
+
 function navIcon(href: NavItemDefinition['href'], isActive: boolean): ReactNode {
     if (href === '/dashboard') return <DashboardIcon isActive={isActive} />;
     if (href === '/submissions') return <FileStackIcon isActive={isActive} />;
@@ -302,13 +328,26 @@ export function AdminShell(props: AdminShellProps) {
 
                 <div className="admin-sidebar-footer">
                     {showTeamManagement ? (
-                        <Link
-                            href="/auth/signup"
-                            className={utilityItemClass(props.activePath === '/auth/signup')}
-                        >
-                            <UsersIcon isActive={props.activePath === '/auth/signup'} />
-                            <span className="label text-inherit">Team Members</span>
-                        </Link>
+                        <>
+                            <Link
+                                href="/auth/signup"
+                                className={utilityItemClass(props.activePath === '/auth/signup')}
+                            >
+                                <UsersIcon isActive={props.activePath === '/auth/signup'} />
+                                <span className="label text-inherit">Team Members</span>
+                            </Link>
+                            <Link
+                                href="/settings/audit-log"
+                                className={utilityItemClass(
+                                    props.activePath === '/settings/audit-log'
+                                )}
+                            >
+                                <AuditTrailIcon
+                                    isActive={props.activePath === '/settings/audit-log'}
+                                />
+                                <span className="label text-inherit">Audit Log</span>
+                            </Link>
+                        </>
                     ) : null}
                     <SignOutButton />
                 </div>

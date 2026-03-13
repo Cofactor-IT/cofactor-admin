@@ -1,12 +1,13 @@
 /**
  * proxy.ts
  *
- * Session guard for protected Admin routes.
+ * Session guard for protected Admin routes with shared security headers.
  */
 
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { getToken } from 'next-auth/jwt';
+import { applySecurityHeaders } from './lib/security/headers';
 
 const DASHBOARD_PATH = '/dashboard';
 const SIGN_IN_PATH = '/signin';
@@ -34,6 +35,14 @@ function shouldPersistCallback(pathname: string): boolean {
     return pathname !== '/' && pathname !== DASHBOARD_PATH;
 }
 
+function nextResponse(): NextResponse {
+    return applySecurityHeaders(NextResponse.next());
+}
+
+function redirectResponse(url: URL): NextResponse {
+    return applySecurityHeaders(NextResponse.redirect(url));
+}
+
 /**
  * Redirects unauthenticated users to sign-in and enforces IT-only routes.
  *
@@ -46,7 +55,7 @@ export async function proxy(request: NextRequest) {
     if (redirectedPath) {
         const redirectUrl = new URL(redirectedPath, request.url);
         redirectUrl.search = request.nextUrl.search;
-        return NextResponse.redirect(redirectUrl);
+        return redirectResponse(redirectUrl);
     }
 
     const token = await getToken({
@@ -55,11 +64,11 @@ export async function proxy(request: NextRequest) {
         cookieName: SESSION_COOKIE_NAME,
     });
     if (pathname === SIGN_IN_PATH && token) {
-        return NextResponse.redirect(new URL(DASHBOARD_PATH, request.url));
+        return redirectResponse(new URL(DASHBOARD_PATH, request.url));
     }
 
     if (isPublicPath(pathname)) {
-        return NextResponse.next();
+        return nextResponse();
     }
 
     if (!token) {
@@ -67,14 +76,14 @@ export async function proxy(request: NextRequest) {
         if (shouldPersistCallback(pathname)) {
             signInUrl.searchParams.set('callbackUrl', `${pathname}${request.nextUrl.search}`);
         }
-        return NextResponse.redirect(signInUrl);
+        return redirectResponse(signInUrl);
     }
 
     if (isITOnlyPath(pathname) && token.role !== 'IT') {
-        return NextResponse.redirect(new URL(DASHBOARD_PATH, request.url));
+        return redirectResponse(new URL(DASHBOARD_PATH, request.url));
     }
 
-    return NextResponse.next();
+    return nextResponse();
 }
 
 export const config = {

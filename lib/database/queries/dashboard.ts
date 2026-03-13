@@ -608,7 +608,7 @@ export async function findDashboardStats(): Promise<DashboardStat[]> {
         {
             title: 'Deals in Progress',
             count: dealsInProgress,
-            secondaryLabel: 'Tracked in Admin',
+            secondaryLabel: 'In Admin pipeline',
             trendLabel:
                 dealsInProgress > 0
                     ? `${dealsInProgress} active in pipeline`
@@ -620,11 +620,11 @@ export async function findDashboardStats(): Promise<DashboardStat[]> {
         {
             title: 'Active Scouts',
             count: activeScouts,
-            secondaryLabel: scoutConfigured ? 'Approved Scout network' : SCOUT_UNAVAILABLE_LABEL,
+            secondaryLabel: scoutConfigured ? 'Approved in Scout network' : SCOUT_UNAVAILABLE_LABEL,
             trendLabel:
                 activeScouts > 0
                     ? `${activeScouts} approved scout profiles`
-                    : 'Scout network still building',
+                    : 'No approved scouts yet',
             actionLabel: 'View all',
             accent: 'default',
             href: '/scouts?tab=profiles',
@@ -632,11 +632,11 @@ export async function findDashboardStats(): Promise<DashboardStat[]> {
         {
             title: 'Scout Applications',
             count: pendingScoutApplications,
-            secondaryLabel: scoutConfigured ? 'Pending Scout review' : SCOUT_UNAVAILABLE_LABEL,
+            secondaryLabel: scoutConfigured ? 'Pending in Scout review' : SCOUT_UNAVAILABLE_LABEL,
             trendLabel:
-                submissionsThisWeek > 0
-                    ? `${submissionsThisWeek} submissions this week`
-                    : 'No pending scout applications',
+                pendingScoutApplications > 0
+                    ? `${pendingScoutApplications} awaiting decision`
+                    : 'No pending applications',
             actionLabel: 'View all',
             accent: 'default',
             href: '/scouts?tab=applications',

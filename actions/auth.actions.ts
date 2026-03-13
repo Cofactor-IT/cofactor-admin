@@ -8,10 +8,13 @@
 
 import { requireIT } from '../lib/auth/permissions';
 import { hashPassword } from '../lib/auth/password';
-import { logAuditAction } from '../lib/database/queries/auditLogs';
 import { createUser, findUserByEmail } from '../lib/database/queries/users';
+import { AUDIT_ACTIONS, getAuditRequestContext, logAuditAction } from '../lib/security/audit-log';
+import { RATE_LIMITS, checkRateLimit, getRequestIpAddress } from '../lib/security/rate-limit';
+import { sanitizePlainText } from '../lib/security/sanitization';
 import { signUpSchema, type SignUpInput } from '../lib/validation/auth.schemas';
 import { flattenValidationErrors, type ValidationFieldErrors } from '../lib/validation/result';
+import { headers } from 'next/headers';
 
 export interface SignUpActionState {
     success: boolean;
@@ -53,11 +56,22 @@ function buildUnauthorizedState(): SignUpActionState {
     };
 }
 
+function buildRateLimitState(retryAfterSeconds: number): SignUpActionState {
+    const retryAfterMinutes = Math.ceil(retryAfterSeconds / 60);
+    return {
+        success: false,
+        message: `Too many account creation attempts. Try again in ${retryAfterMinutes} minute${
+            retryAfterMinutes === 1 ? '' : 's'
+        }.`,
+    };
+}
+
 async function createValidatedUser(data: SignUpInput) {
     const passwordHash = await hashPassword(data.password);
+    const sanitizedName = sanitizePlainText(data.name);
 
     return createUser({
-        name: data.name.trim(),
+        name: sanitizedName,
         email: data.email.toLowerCase().trim(),
         passwordHash,
         role: data.role,
@@ -68,17 +82,22 @@ async function writeUserCreatedAudit(
     userId: string,
     email: string,
     role: 'ANALYST' | 'IT',
-    actorId: string
+    actorId: string,
+    actorEmail?: string | null
 ) {
+    const requestContext = await getAuditRequestContext();
     await logAuditAction({
-        action: 'USER_CREATED',
+        action: AUDIT_ACTIONS.USER_CREATED,
         resourceType: 'User',
         resourceId: userId,
         userId: actorId,
+        userEmail: actorEmail ?? undefined,
         changes: {
             email,
             role,
         },
+        ipAddress: requestContext.ipAddress,
+        userAgent: requestContext.userAgent,
     });
 }
 
@@ -102,6 +121,15 @@ export async function signUp(
     }
 
     const normalizedEmail = validated.data.email.toLowerCase().trim();
+    const requestHeaders = await headers();
+    const rateLimit = checkRateLimit({
+        key: `signup:${getRequestIpAddress(requestHeaders)}:${normalizedEmail}`,
+        config: RATE_LIMITS.SIGN_UP,
+    });
+    if (!rateLimit.allowed) {
+        return buildRateLimitState(rateLimit.retryAfterSeconds ?? 0);
+    }
+
     const existingUser = await findUserByEmail(normalizedEmail);
     if (existingUser) {
         return buildExistingEmailState();
@@ -112,7 +140,8 @@ export async function signUp(
         createdUser.id,
         createdUser.email,
         createdUser.role,
-        actorSession.user.id
+        actorSession.user.id,
+        actorSession.user.email
     );
 
     return {

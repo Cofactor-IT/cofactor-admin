@@ -6,6 +6,7 @@
  * Server Actions for forgot-password and reset-password flows.
  */
 
+import { headers } from 'next/headers';
 import {
     buildPasswordResetUrl,
     generatePasswordResetToken,
@@ -13,7 +14,6 @@ import {
     hashPasswordResetToken,
 } from '../lib/auth/passwordReset';
 import { hashPassword } from '../lib/auth/password';
-import { logAuditAction } from '../lib/database/queries/auditLogs';
 import {
     clearPasswordResetTokensForUser,
     completePasswordReset,
@@ -21,6 +21,8 @@ import {
 } from '../lib/database/queries/passwordResetTokens';
 import { findPasswordResetCandidateByEmail } from '../lib/database/queries/users';
 import { sendPasswordResetEmail } from '../lib/email/passwordReset';
+import { AUDIT_ACTIONS, getAuditRequestContext, logAuditAction } from '../lib/security/audit-log';
+import { RATE_LIMITS, checkRateLimit, getRequestIpAddress } from '../lib/security/rate-limit';
 import { forgotPasswordSchema, resetPasswordSchema } from '../lib/validation/auth.schemas';
 import { flattenValidationErrors, type ValidationFieldErrors } from '../lib/validation/result';
 
@@ -67,6 +69,16 @@ function parseResetPasswordFormData(formData: FormData): Record<string, unknown>
     };
 }
 
+function buildRateLimitState(retryAfterSeconds: number): ForgotPasswordActionState {
+    const retryAfterMinutes = Math.ceil(retryAfterSeconds / 60);
+    return {
+        success: false,
+        message: `Too many password reset attempts. Try again in ${retryAfterMinutes} minute${
+            retryAfterMinutes === 1 ? '' : 's'
+        }.`,
+    };
+}
+
 async function issuePasswordResetToken(userId: string): Promise<{ resetUrl: string }> {
     const token = generatePasswordResetToken();
     const tokenHash = hashPasswordResetToken(token);
@@ -93,6 +105,13 @@ export async function requestPasswordReset(
     const parsed = forgotPasswordSchema.safeParse(parseForgotPasswordFormData(formData));
     if (!parsed.success) return buildInvalidFieldsState(flattenValidationErrors(parsed.error));
 
+    const requestHeaders = await headers();
+    const rateLimit = checkRateLimit({
+        key: `password-reset:${getRequestIpAddress(requestHeaders)}:${parsed.data.email}`,
+        config: RATE_LIMITS.PASSWORD_RESET,
+    });
+    if (!rateLimit.allowed) return buildRateLimitState(rateLimit.retryAfterSeconds ?? 0);
+
     const user = await findPasswordResetCandidateByEmail(parsed.data.email);
     if (!user || !user.isActive) return { success: true, message: GENERIC_RESET_REQUEST_MESSAGE };
 
@@ -102,11 +121,16 @@ export async function requestPasswordReset(
         name: user.name,
         resetUrl,
     });
+    const requestContext = await getAuditRequestContext();
     await logAuditAction({
-        action: 'PASSWORD_RESET_REQUESTED',
+        action: AUDIT_ACTIONS.PASSWORD_RESET_REQUESTED,
         resourceType: 'User',
         resourceId: user.id,
+        userId: user.id,
+        userEmail: user.email,
         changes: { email: user.email },
+        ipAddress: requestContext.ipAddress,
+        userAgent: requestContext.userAgent,
     });
 
     const state: ForgotPasswordActionState = {
@@ -143,10 +167,14 @@ export async function resetPassword(
     const userId = await completePasswordReset({ tokenHash, passwordHash, now: new Date() });
     if (!userId) return { success: false, message: INVALID_RESET_TOKEN_MESSAGE };
 
+    const requestContext = await getAuditRequestContext();
     await logAuditAction({
-        action: 'PASSWORD_RESET_COMPLETED',
+        action: AUDIT_ACTIONS.PASSWORD_RESET_COMPLETED,
         resourceType: 'User',
         resourceId: userId,
+        userId,
+        ipAddress: requestContext.ipAddress,
+        userAgent: requestContext.userAgent,
     });
 
     return { success: true, message: RESET_SUCCESS_MESSAGE };

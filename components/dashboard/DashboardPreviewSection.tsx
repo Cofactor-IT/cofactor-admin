@@ -45,10 +45,12 @@ function itemList(items: DashboardPreviewSectionModel['items']) {
             {items.map((item) => (
                 <Link key={item.id} href={item.href} className="admin-preview-item">
                     <div className="admin-preview-copy">
-                        <h4 className="m-0">{item.title}</h4>
+                        <h4 className="m-0 admin-preview-title" title={item.title}>
+                            {item.title}
+                        </h4>
                         <p className="caption m-0">{item.meta}</p>
                     </div>
-                    <span className="caption">{item.detail}</span>
+                    <span className="caption admin-preview-detail">{item.detail}</span>
                 </Link>
             ))}
         </div>

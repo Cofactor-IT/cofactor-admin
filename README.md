@@ -222,6 +222,27 @@ Both run:
   - shared base Zod schemas for internal email, password, name, id, and pagination
   - auth schemas refactored to reuse common validation primitives and typed exports
   - server actions now flatten field-level validation errors through a shared helper
+- `CA-24` Security standards
+  - centralized proxy security header helper for CSP, permissions, clickjacking, and MIME controls
+  - security headers now apply to protected responses and redirects consistently
+  - HSTS is enabled in production only, with a dev-safe CSP exception for Next.js HMR
+- `CA-25` Rate limiting infrastructure
+  - centralized in-memory `RATE_LIMITS` contract for sign-in, sign-up, and password reset
+  - sensitive flows now derive IP/email-scoped rate-limit keys before any database work
+  - sign-in surfaces retry-aware rate-limit messages instead of generic auth failures
+- `CA-26` HTML sanitization
+  - added server-side sanitization helpers for HTML, plain text, filenames, and slugs
+  - account creation now sanitizes stored names before persistence
+  - rich-text sanitization contract is established for future notes/templates flows
+- `CA-27` Audit logging
+  - centralized audit action constants and failure-tolerant logging helper under `lib/security`
+  - successful sign in, failed sign in, sign out, account creation, and password reset now flow
+    through the shared audit contract
+  - IT users can review recent audit history at `/settings/audit-log`
+- `CA-28` CSRF protection
+  - added `verifyCsrfOrigin()` for future custom mutating API routes
+  - documented the current protection split between Next.js Server Actions and NextAuth
+  - preserved hardened session-cookie defaults with `sameSite: 'lax'`
 - `CA-7` Domain-restricted sign up
   - `@cofactor.world` validation in server-side Zod schema
   - Signup server action + user creation + audit logging

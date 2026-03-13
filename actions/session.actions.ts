@@ -7,7 +7,7 @@
  */
 
 import { requireAuthSession } from '../lib/auth/session';
-import { logAuditAction } from '../lib/database/queries/auditLogs';
+import { AUDIT_ACTIONS, getAuditRequestContext, logAuditAction } from '../lib/security/audit-log';
 
 /**
  * Logs a sign-out audit event while session context is still available.
@@ -16,10 +16,14 @@ import { logAuditAction } from '../lib/database/queries/auditLogs';
  */
 export async function logSignOutAuditAction(): Promise<void> {
     const session = await requireAuthSession();
+    const requestContext = await getAuditRequestContext();
     await logAuditAction({
-        action: 'USER_SIGN_OUT',
+        action: AUDIT_ACTIONS.USER_SIGN_OUT,
         resourceType: 'Session',
         resourceId: session.user.id,
         userId: session.user.id,
+        userEmail: session.user.email ?? undefined,
+        ipAddress: requestContext.ipAddress,
+        userAgent: requestContext.userAgent,
     });
 }

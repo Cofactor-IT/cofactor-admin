@@ -16,13 +16,13 @@ depending on chat history.
 - `CA-22` done
 - `CA-23` done
 - `CA-24` implemented on `feature/CA-24-security-standards`
+- `CA-25` implemented on `feature/CA-25-rate-limiting-infrastructure`
 
 ## Recommended Delivery Order
 
-1. `CA-25` Rate limiting infrastructure
-2. `CA-26` HTML sanitization
-3. `CA-27` Audit logging
-4. `CA-28` CSRF protection
+1. `CA-26` HTML sanitization
+2. `CA-27` Audit logging
+3. `CA-28` CSRF protection
 
 ## Repo-Specific Constraints
 

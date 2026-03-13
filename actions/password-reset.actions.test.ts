@@ -6,6 +6,10 @@
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+vi.mock('next/headers', () => ({
+    headers: vi.fn(),
+}));
+
 vi.mock('../lib/database/queries/users', () => ({
     findPasswordResetCandidateByEmail: vi.fn(),
 }));
@@ -35,7 +39,20 @@ vi.mock('../lib/email/passwordReset', () => ({
     sendPasswordResetEmail: vi.fn(),
 }));
 
+vi.mock('../lib/security/rate-limit', () => ({
+    RATE_LIMITS: {
+        PASSWORD_RESET: {
+            max: 3,
+            windowMs: 60 * 60 * 1000,
+            lockDurationMs: 60 * 60 * 1000,
+        },
+    },
+    checkRateLimit: vi.fn(),
+    getRequestIpAddress: vi.fn(),
+}));
+
 import { requestPasswordReset, resetPassword } from './password-reset.actions';
+import { headers } from 'next/headers';
 import { hashPassword } from '../lib/auth/password';
 import {
     buildPasswordResetUrl,
@@ -51,6 +68,7 @@ import {
     createPasswordResetToken,
 } from '../lib/database/queries/passwordResetTokens';
 import { findPasswordResetCandidateByEmail } from '../lib/database/queries/users';
+import { checkRateLimit, getRequestIpAddress } from '../lib/security/rate-limit';
 
 function buildForgotFormData(email: string) {
     const formData = new FormData();
@@ -69,6 +87,16 @@ describe('requestPasswordReset', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         delete process.env.PASSWORD_RESET_DEV_SHOW_LINK;
+        vi.mocked(headers).mockResolvedValue({
+            get: vi.fn().mockReturnValue('127.0.0.1'),
+        } as never);
+        vi.mocked(getRequestIpAddress).mockReturnValue('127.0.0.1');
+        vi.mocked(checkRateLimit).mockReturnValue({
+            allowed: true,
+            remaining: 2,
+            resetTime: Date.now() + 1000,
+            locked: false,
+        });
         vi.mocked(findPasswordResetCandidateByEmail).mockResolvedValue(null);
     });
 
@@ -92,6 +120,25 @@ describe('requestPasswordReset', () => {
         expect(state.success).toBe(true);
         expect(state.message).toContain('If an account exists');
         expect(createPasswordResetToken).not.toHaveBeenCalled();
+    });
+
+    it('blocks repeated requests when the password reset limit is exceeded', async () => {
+        vi.mocked(checkRateLimit).mockReturnValueOnce({
+            allowed: false,
+            remaining: 0,
+            resetTime: Date.now() + 60_000,
+            locked: true,
+            retryAfterSeconds: 60,
+        });
+
+        const state = await requestPasswordReset(
+            { success: false, message: '' },
+            buildForgotFormData('user@cofactor.world')
+        );
+
+        expect(state.success).toBe(false);
+        expect(state.message).toContain('Try again in 1 minute');
+        expect(findPasswordResetCandidateByEmail).not.toHaveBeenCalled();
     });
 
     it('issues token for active account and logs audit', async () => {

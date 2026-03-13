@@ -226,6 +226,10 @@ Both run:
   - centralized proxy security header helper for CSP, permissions, clickjacking, and MIME controls
   - security headers now apply to protected responses and redirects consistently
   - HSTS is enabled in production only, with a dev-safe CSP exception for Next.js HMR
+- `CA-25` Rate limiting infrastructure
+  - centralized in-memory `RATE_LIMITS` contract for sign-in, sign-up, and password reset
+  - sensitive flows now derive IP/email-scoped rate-limit keys before any database work
+  - sign-in surfaces retry-aware rate-limit messages instead of generic auth failures
 - `CA-7` Domain-restricted sign up
   - `@cofactor.world` validation in server-side Zod schema
   - Signup server action + user creation + audit logging

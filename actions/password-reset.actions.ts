@@ -6,6 +6,7 @@
  * Server Actions for forgot-password and reset-password flows.
  */
 
+import { headers } from 'next/headers';
 import {
     buildPasswordResetUrl,
     generatePasswordResetToken,
@@ -21,6 +22,7 @@ import {
 } from '../lib/database/queries/passwordResetTokens';
 import { findPasswordResetCandidateByEmail } from '../lib/database/queries/users';
 import { sendPasswordResetEmail } from '../lib/email/passwordReset';
+import { RATE_LIMITS, checkRateLimit, getRequestIpAddress } from '../lib/security/rate-limit';
 import { forgotPasswordSchema, resetPasswordSchema } from '../lib/validation/auth.schemas';
 import { flattenValidationErrors, type ValidationFieldErrors } from '../lib/validation/result';
 
@@ -67,6 +69,16 @@ function parseResetPasswordFormData(formData: FormData): Record<string, unknown>
     };
 }
 
+function buildRateLimitState(retryAfterSeconds: number): ForgotPasswordActionState {
+    const retryAfterMinutes = Math.ceil(retryAfterSeconds / 60);
+    return {
+        success: false,
+        message: `Too many password reset attempts. Try again in ${retryAfterMinutes} minute${
+            retryAfterMinutes === 1 ? '' : 's'
+        }.`,
+    };
+}
+
 async function issuePasswordResetToken(userId: string): Promise<{ resetUrl: string }> {
     const token = generatePasswordResetToken();
     const tokenHash = hashPasswordResetToken(token);
@@ -92,6 +104,13 @@ export async function requestPasswordReset(
 ): Promise<ForgotPasswordActionState> {
     const parsed = forgotPasswordSchema.safeParse(parseForgotPasswordFormData(formData));
     if (!parsed.success) return buildInvalidFieldsState(flattenValidationErrors(parsed.error));
+
+    const requestHeaders = await headers();
+    const rateLimit = checkRateLimit({
+        key: `password-reset:${getRequestIpAddress(requestHeaders)}:${parsed.data.email}`,
+        config: RATE_LIMITS.PASSWORD_RESET,
+    });
+    if (!rateLimit.allowed) return buildRateLimitState(rateLimit.retryAfterSeconds ?? 0);
 
     const user = await findPasswordResetCandidateByEmail(parsed.data.email);
     if (!user || !user.isActive) return { success: true, message: GENERIC_RESET_REQUEST_MESSAGE };

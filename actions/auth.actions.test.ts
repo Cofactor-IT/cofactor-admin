@@ -6,6 +6,10 @@
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+vi.mock('next/headers', () => ({
+    headers: vi.fn(),
+}));
+
 vi.mock('../lib/auth/password', () => ({
     hashPassword: vi.fn(),
 }));
@@ -23,11 +27,25 @@ vi.mock('../lib/database/queries/auditLogs', () => ({
     logAuditAction: vi.fn(),
 }));
 
+vi.mock('../lib/security/rate-limit', () => ({
+    RATE_LIMITS: {
+        SIGN_UP: {
+            max: 3,
+            windowMs: 15 * 60 * 1000,
+            lockDurationMs: 15 * 60 * 1000,
+        },
+    },
+    checkRateLimit: vi.fn(),
+    getRequestIpAddress: vi.fn(),
+}));
+
 import { signUp } from './auth.actions';
+import { headers } from 'next/headers';
 import { requireIT } from '../lib/auth/permissions';
 import { hashPassword } from '../lib/auth/password';
 import { logAuditAction } from '../lib/database/queries/auditLogs';
 import { createUser, findUserByEmail } from '../lib/database/queries/users';
+import { checkRateLimit, getRequestIpAddress } from '../lib/security/rate-limit';
 
 function buildFormData(overrides: Partial<Record<string, string>> = {}) {
     const values = {
@@ -46,6 +64,16 @@ function buildFormData(overrides: Partial<Record<string, string>> = {}) {
 describe('signUp', () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        vi.mocked(headers).mockResolvedValue({
+            get: vi.fn().mockReturnValue('127.0.0.1'),
+        } as never);
+        vi.mocked(getRequestIpAddress).mockReturnValue('127.0.0.1');
+        vi.mocked(checkRateLimit).mockReturnValue({
+            allowed: true,
+            remaining: 2,
+            resetTime: Date.now() + 1000,
+            locked: false,
+        });
         vi.mocked(requireIT).mockResolvedValue({
             user: {
                 id: 'it_user_1',
@@ -74,6 +102,23 @@ describe('signUp', () => {
 
         expect(state.success).toBe(false);
         expect(state.message).toContain('Only IT users');
+        expect(findUserByEmail).not.toHaveBeenCalled();
+        expect(createUser).not.toHaveBeenCalled();
+    });
+
+    it('rejects requests that exceed the signup rate limit', async () => {
+        vi.mocked(checkRateLimit).mockReturnValueOnce({
+            allowed: false,
+            remaining: 0,
+            resetTime: Date.now() + 60_000,
+            locked: true,
+            retryAfterSeconds: 60,
+        });
+
+        const state = await signUp({ success: false }, buildFormData());
+
+        expect(state.success).toBe(false);
+        expect(state.message).toContain('Try again in 1 minute');
         expect(findUserByEmail).not.toHaveBeenCalled();
         expect(createUser).not.toHaveBeenCalled();
     });

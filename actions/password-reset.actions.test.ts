@@ -31,7 +31,12 @@ vi.mock('../lib/auth/password', () => ({
     hashPassword: vi.fn(),
 }));
 
-vi.mock('../lib/database/queries/auditLogs', () => ({
+vi.mock('../lib/security/audit-log', () => ({
+    AUDIT_ACTIONS: {
+        PASSWORD_RESET_REQUESTED: 'PASSWORD_RESET_REQUESTED',
+        PASSWORD_RESET_COMPLETED: 'PASSWORD_RESET_COMPLETED',
+    },
+    getAuditRequestContext: vi.fn(),
     logAuditAction: vi.fn(),
 }));
 
@@ -60,7 +65,7 @@ import {
     getPasswordResetExpiry,
     hashPasswordResetToken,
 } from '../lib/auth/passwordReset';
-import { logAuditAction } from '../lib/database/queries/auditLogs';
+import { getAuditRequestContext, logAuditAction } from '../lib/security/audit-log';
 import { sendPasswordResetEmail } from '../lib/email/passwordReset';
 import {
     clearPasswordResetTokensForUser,
@@ -96,6 +101,10 @@ describe('requestPasswordReset', () => {
             remaining: 2,
             resetTime: Date.now() + 1000,
             locked: false,
+        });
+        vi.mocked(getAuditRequestContext).mockResolvedValue({
+            ipAddress: '127.0.0.1',
+            userAgent: 'Vitest',
         });
         vi.mocked(findPasswordResetCandidateByEmail).mockResolvedValue(null);
     });
@@ -172,7 +181,11 @@ describe('requestPasswordReset', () => {
             action: 'PASSWORD_RESET_REQUESTED',
             resourceType: 'User',
             resourceId: 'user_1',
+            userId: 'user_1',
+            userEmail: 'nf@cofactor.world',
             changes: { email: 'nf@cofactor.world' },
+            ipAddress: '127.0.0.1',
+            userAgent: 'Vitest',
         });
         expect(sendPasswordResetEmail).toHaveBeenCalledWith({
             email: 'nf@cofactor.world',
@@ -186,6 +199,10 @@ describe('requestPasswordReset', () => {
 describe('resetPassword', () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        vi.mocked(getAuditRequestContext).mockResolvedValue({
+            ipAddress: '127.0.0.1',
+            userAgent: 'Vitest',
+        });
     });
 
     it('returns token error when token cannot be consumed', async () => {
@@ -217,6 +234,9 @@ describe('resetPassword', () => {
             action: 'PASSWORD_RESET_COMPLETED',
             resourceType: 'User',
             resourceId: 'user_1',
+            userId: 'user_1',
+            ipAddress: '127.0.0.1',
+            userAgent: 'Vitest',
         });
     });
 });

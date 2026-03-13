@@ -33,7 +33,7 @@ export function DashboardOverview(props: DashboardOverviewProps) {
     return (
         <section className="admin-content-stack admin-dashboard-shell">
             <div className="admin-dashboard-intro">
-                <p className="body m-0">{props.greeting}</p>
+                <p className="body-large m-0">{props.greeting}</p>
             </div>
             <div className="admin-dashboard-grid">
                 {props.stats.map((stat) => (

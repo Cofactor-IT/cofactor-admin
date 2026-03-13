@@ -198,18 +198,23 @@ model EmailTemplate {
 model AuditLog {
   id           String   @id @default(cuid())
   userId       String?
+  userEmail    String?
   action       String
   resourceType String
   resourceId   String
   changes      Json?
   ipAddress    String?
   userAgent    String?
+  status       String   @default("SUCCESS")
+  error        String?
   createdAt    DateTime @default(now())
   user         User?    @relation(fields: [userId], references: [id])
 
   @@index([userId])
+  @@index([userEmail])
   @@index([action])
   @@index([resourceType, resourceId])
+  @@index([status])
   @@index([createdAt])
 }
 

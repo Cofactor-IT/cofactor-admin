@@ -8,8 +8,8 @@
 
 import { requireIT } from '../lib/auth/permissions';
 import { hashPassword } from '../lib/auth/password';
-import { logAuditAction } from '../lib/database/queries/auditLogs';
 import { createUser, findUserByEmail } from '../lib/database/queries/users';
+import { AUDIT_ACTIONS, getAuditRequestContext, logAuditAction } from '../lib/security/audit-log';
 import { RATE_LIMITS, checkRateLimit, getRequestIpAddress } from '../lib/security/rate-limit';
 import { sanitizePlainText } from '../lib/security/sanitization';
 import { signUpSchema, type SignUpInput } from '../lib/validation/auth.schemas';
@@ -82,17 +82,22 @@ async function writeUserCreatedAudit(
     userId: string,
     email: string,
     role: 'ANALYST' | 'IT',
-    actorId: string
+    actorId: string,
+    actorEmail?: string | null
 ) {
+    const requestContext = await getAuditRequestContext();
     await logAuditAction({
-        action: 'USER_CREATED',
+        action: AUDIT_ACTIONS.USER_CREATED,
         resourceType: 'User',
         resourceId: userId,
         userId: actorId,
+        userEmail: actorEmail ?? undefined,
         changes: {
             email,
             role,
         },
+        ipAddress: requestContext.ipAddress,
+        userAgent: requestContext.userAgent,
     });
 }
 
@@ -135,7 +140,8 @@ export async function signUp(
         createdUser.id,
         createdUser.email,
         createdUser.role,
-        actorSession.user.id
+        actorSession.user.id,
+        actorSession.user.email
     );
 
     return {

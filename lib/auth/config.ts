@@ -17,6 +17,11 @@ import {
     getRequestIpAddress,
     resetRateLimit,
 } from '../security/rate-limit';
+import {
+    AUDIT_ACTIONS,
+    getAuditRequestContextFromSource,
+    logAuditAction,
+} from '../security/audit-log';
 import { signInSchema } from '../validation/auth.schemas';
 import { verifyPassword } from './password';
 
@@ -57,6 +62,30 @@ function getSignInRateLimitKey(req: unknown, email: string): string {
     return `signin:${ipAddress}:${email.toLowerCase()}`;
 }
 
+async function writeSignInAudit(params: {
+    req: unknown;
+    userId?: string;
+    userEmail: string;
+    status?: 'SUCCESS' | 'FAILURE';
+    error?: string;
+}) {
+    const requestContext = getAuditRequestContextFromSource(params.req);
+    await logAuditAction({
+        userId: params.userId,
+        userEmail: params.userEmail,
+        action:
+            params.status === 'FAILURE'
+                ? AUDIT_ACTIONS.USER_SIGN_IN_FAILED
+                : AUDIT_ACTIONS.USER_SIGN_IN,
+        resourceType: 'User',
+        resourceId: params.userId ?? params.userEmail,
+        ipAddress: requestContext.ipAddress,
+        userAgent: requestContext.userAgent,
+        status: params.status ?? 'SUCCESS',
+        error: params.error,
+    });
+}
+
 function isUserLocked(lockedUntil: Date | null): boolean {
     return Boolean(lockedUntil && lockedUntil > new Date());
 }
@@ -78,20 +107,57 @@ async function authorizeWithCredentials(credentials: unknown, req: unknown) {
         key: rateLimitKey,
         config: RATE_LIMITS.SIGN_IN,
     });
-    if (!rateLimit.allowed) throw buildRateLimitError(rateLimit.retryAfterSeconds ?? 0);
+    if (!rateLimit.allowed) {
+        await writeSignInAudit({
+            req,
+            userEmail: parsed.data.email,
+            status: 'FAILURE',
+            error: RATE_LIMIT_ERROR,
+        });
+        throw buildRateLimitError(rateLimit.retryAfterSeconds ?? 0);
+    }
 
     const user = await findAuthUserByEmail(parsed.data.email);
-    if (!user || !user.isActive) return null;
-    if (isUserLocked(user.lockedUntil)) throw new Error(ACCOUNT_LOCKED_ERROR);
+    if (!user || !user.isActive) {
+        await writeSignInAudit({
+            req,
+            userEmail: parsed.data.email,
+            status: 'FAILURE',
+            error: 'INVALID_CREDENTIALS',
+        });
+        return null;
+    }
+    if (isUserLocked(user.lockedUntil)) {
+        await writeSignInAudit({
+            req,
+            userId: user.id,
+            userEmail: user.email,
+            status: 'FAILURE',
+            error: ACCOUNT_LOCKED_ERROR,
+        });
+        throw new Error(ACCOUNT_LOCKED_ERROR);
+    }
 
     const passwordMatches = await verifyPassword(parsed.data.password, user.passwordHash);
     if (!passwordMatches) {
         await registerFailedPasswordAttempt(user.id, user.failedLoginAttempts);
+        await writeSignInAudit({
+            req,
+            userId: user.id,
+            userEmail: user.email,
+            status: 'FAILURE',
+            error: 'INVALID_CREDENTIALS',
+        });
         return null;
     }
 
     await resetLoginAttempts(user.id);
     resetRateLimit(rateLimitKey);
+    await writeSignInAudit({
+        req,
+        userId: user.id,
+        userEmail: user.email,
+    });
     return { id: user.id, name: user.name, email: user.email, role: user.role };
 }
 

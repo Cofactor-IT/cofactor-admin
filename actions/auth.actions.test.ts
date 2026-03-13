@@ -23,7 +23,11 @@ vi.mock('../lib/database/queries/users', () => ({
     createUser: vi.fn(),
 }));
 
-vi.mock('../lib/database/queries/auditLogs', () => ({
+vi.mock('../lib/security/audit-log', () => ({
+    AUDIT_ACTIONS: {
+        USER_CREATED: 'USER_CREATED',
+    },
+    getAuditRequestContext: vi.fn(),
     logAuditAction: vi.fn(),
 }));
 
@@ -43,7 +47,7 @@ import { signUp } from './auth.actions';
 import { headers } from 'next/headers';
 import { requireIT } from '../lib/auth/permissions';
 import { hashPassword } from '../lib/auth/password';
-import { logAuditAction } from '../lib/database/queries/auditLogs';
+import { getAuditRequestContext, logAuditAction } from '../lib/security/audit-log';
 import { createUser, findUserByEmail } from '../lib/database/queries/users';
 import { checkRateLimit, getRequestIpAddress } from '../lib/security/rate-limit';
 
@@ -74,9 +78,14 @@ describe('signUp', () => {
             resetTime: Date.now() + 1000,
             locked: false,
         });
+        vi.mocked(getAuditRequestContext).mockResolvedValue({
+            ipAddress: '127.0.0.1',
+            userAgent: 'Vitest',
+        });
         vi.mocked(requireIT).mockResolvedValue({
             user: {
                 id: 'it_user_1',
+                email: 'it@cofactor.world',
                 role: 'IT',
             },
         } as Awaited<ReturnType<typeof requireIT>>);
@@ -149,10 +158,13 @@ describe('signUp', () => {
             resourceType: 'User',
             resourceId: 'user_1',
             userId: 'it_user_1',
+            userEmail: 'it@cofactor.world',
             changes: {
                 email: 'theis@cofactor.world',
                 role: 'ANALYST',
             },
+            ipAddress: '127.0.0.1',
+            userAgent: 'Vitest',
         });
     });
 

@@ -14,7 +14,6 @@ import {
     hashPasswordResetToken,
 } from '../lib/auth/passwordReset';
 import { hashPassword } from '../lib/auth/password';
-import { logAuditAction } from '../lib/database/queries/auditLogs';
 import {
     clearPasswordResetTokensForUser,
     completePasswordReset,
@@ -22,6 +21,7 @@ import {
 } from '../lib/database/queries/passwordResetTokens';
 import { findPasswordResetCandidateByEmail } from '../lib/database/queries/users';
 import { sendPasswordResetEmail } from '../lib/email/passwordReset';
+import { AUDIT_ACTIONS, getAuditRequestContext, logAuditAction } from '../lib/security/audit-log';
 import { RATE_LIMITS, checkRateLimit, getRequestIpAddress } from '../lib/security/rate-limit';
 import { forgotPasswordSchema, resetPasswordSchema } from '../lib/validation/auth.schemas';
 import { flattenValidationErrors, type ValidationFieldErrors } from '../lib/validation/result';
@@ -121,11 +121,16 @@ export async function requestPasswordReset(
         name: user.name,
         resetUrl,
     });
+    const requestContext = await getAuditRequestContext();
     await logAuditAction({
-        action: 'PASSWORD_RESET_REQUESTED',
+        action: AUDIT_ACTIONS.PASSWORD_RESET_REQUESTED,
         resourceType: 'User',
         resourceId: user.id,
+        userId: user.id,
+        userEmail: user.email,
         changes: { email: user.email },
+        ipAddress: requestContext.ipAddress,
+        userAgent: requestContext.userAgent,
     });
 
     const state: ForgotPasswordActionState = {
@@ -162,10 +167,14 @@ export async function resetPassword(
     const userId = await completePasswordReset({ tokenHash, passwordHash, now: new Date() });
     if (!userId) return { success: false, message: INVALID_RESET_TOKEN_MESSAGE };
 
+    const requestContext = await getAuditRequestContext();
     await logAuditAction({
-        action: 'PASSWORD_RESET_COMPLETED',
+        action: AUDIT_ACTIONS.PASSWORD_RESET_COMPLETED,
         resourceType: 'User',
         resourceId: userId,
+        userId,
+        ipAddress: requestContext.ipAddress,
+        userAgent: requestContext.userAgent,
     });
 
     return { success: true, message: RESET_SUCCESS_MESSAGE };

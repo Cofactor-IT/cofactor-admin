@@ -234,6 +234,11 @@ Both run:
   - added server-side sanitization helpers for HTML, plain text, filenames, and slugs
   - account creation now sanitizes stored names before persistence
   - rich-text sanitization contract is established for future notes/templates flows
+- `CA-27` Audit logging
+  - centralized audit action constants and failure-tolerant logging helper under `lib/security`
+  - successful sign in, failed sign in, sign out, account creation, and password reset now flow
+    through the shared audit contract
+  - IT users can review recent audit history at `/settings/audit-log`
 - `CA-7` Domain-restricted sign up
   - `@cofactor.world` validation in server-side Zod schema
   - Signup server action + user creation + audit logging

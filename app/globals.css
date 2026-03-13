@@ -661,6 +661,18 @@
         min-width: 0;
     }
 
+    .admin-preview-title {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .admin-preview-detail {
+        white-space: nowrap;
+        flex-shrink: 0;
+        text-align: right;
+    }
+
     .admin-activity-list {
         display: grid;
     }

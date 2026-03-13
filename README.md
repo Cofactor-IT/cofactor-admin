@@ -100,6 +100,8 @@ npm run docker:down
 - `npm run prisma:migrate:deploy`
 - `npm run prisma:migrate:status`
 - `npm run lint`
+- `npm run format`
+- `npm run format:check`
 - `npm run type-check`
 - `npm run build`
 - `npm run scout:local:setup`
@@ -190,6 +192,10 @@ Both run:
   - Admin-specific ESLint rules for explicit `any` and unused variables
   - TypeScript `noImplicitReturns` enabled
   - Husky pre-commit hook blocks commits on lint/type-check failures
+- `CA-20` Configure Prettier
+  - Repository-wide Prettier configuration for Admin formatting rules
+  - Format and format-check scripts for local and CI workflows
+  - ESLint and Prettier integrated without conflicting style rules
 - `CA-7` Domain-restricted sign up
   - `@cofactor.world` validation in server-side Zod schema
   - Signup server action + user creation + audit logging

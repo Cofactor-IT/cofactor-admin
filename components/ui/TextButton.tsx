@@ -1,4 +1,4 @@
-"use client"
+'use client';
 
 /**
  * TextButton.tsx
@@ -6,16 +6,16 @@
  * Link-style text button for lightweight actions.
  */
 
-import Link from "next/link"
-import type { ButtonHTMLAttributes, ReactNode } from "react"
+import Link from 'next/link';
+import type { ButtonHTMLAttributes, ReactNode } from 'react';
 
-interface TextButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "type"> {
-  children: ReactNode
-  href?: string
+interface TextButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type'> {
+    children: ReactNode;
+    href?: string;
 }
 
 function getClassName(className: string): string {
-  return `label admin-text-button inline-flex items-center ${className}`.trim()
+    return `label admin-text-button inline-flex items-center ${className}`.trim();
 }
 
 /**
@@ -24,19 +24,19 @@ function getClassName(className: string): string {
  * @param props - Text button content and interaction props
  * @returns Link or button element with shared text-button styling
  */
-export function TextButton({ children, href, className = "", ...props }: TextButtonProps) {
-  const mergedClassName = getClassName(className)
-  if (href) {
-    return (
-      <Link href={href} className={mergedClassName}>
-        {children}
-      </Link>
-    )
-  }
+export function TextButton({ children, href, className = '', ...props }: TextButtonProps) {
+    const mergedClassName = getClassName(className);
+    if (href) {
+        return (
+            <Link href={href} className={mergedClassName}>
+                {children}
+            </Link>
+        );
+    }
 
-  return (
-    <button type="button" className={mergedClassName} {...props}>
-      {children}
-    </button>
-  )
+    return (
+        <button type="button" className={mergedClassName} {...props}>
+            {children}
+        </button>
+    );
 }

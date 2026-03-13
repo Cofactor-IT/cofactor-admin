@@ -4,10 +4,10 @@
  * Password hashing utilities for account management.
  */
 
-import { hash } from "bcryptjs"
-import { compare } from "bcryptjs"
+import { hash } from 'bcryptjs';
+import { compare } from 'bcryptjs';
 
-const PASSWORD_SALT_ROUNDS = 12
+const PASSWORD_SALT_ROUNDS = 12;
 
 /**
  * Hashes a plain text password using bcrypt.
@@ -16,7 +16,7 @@ const PASSWORD_SALT_ROUNDS = 12
  * @returns Bcrypt hash suitable for database storage
  */
 export async function hashPassword(password: string): Promise<string> {
-  return hash(password, PASSWORD_SALT_ROUNDS)
+    return hash(password, PASSWORD_SALT_ROUNDS);
 }
 
 /**
@@ -27,5 +27,5 @@ export async function hashPassword(password: string): Promise<string> {
  * @returns True when password matches the hash
  */
 export async function verifyPassword(password: string, passwordHash: string): Promise<boolean> {
-  return compare(password, passwordHash)
+    return compare(password, passwordHash);
 }

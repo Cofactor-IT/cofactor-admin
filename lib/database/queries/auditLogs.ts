@@ -4,15 +4,15 @@
  * Query functions for creating audit trail records.
  */
 
-import type { Prisma } from "@prisma/client"
-import { adminDb } from "../adminDb"
+import type { Prisma } from '@prisma/client';
+import { adminDb } from '../adminDb';
 
 interface LogAuditActionParams {
-  action: string
-  resourceType: string
-  resourceId: string
-  userId?: string
-  changes?: Prisma.InputJsonValue
+    action: string;
+    resourceType: string;
+    resourceId: string;
+    userId?: string;
+    changes?: Prisma.InputJsonValue;
 }
 
 /**
@@ -22,18 +22,18 @@ interface LogAuditActionParams {
  * @returns Created audit log identifier
  */
 export async function logAuditAction(params: LogAuditActionParams) {
-  const record = await adminDb.auditLog.create({
-    data: {
-      action: params.action,
-      resourceType: params.resourceType,
-      resourceId: params.resourceId,
-      userId: params.userId,
-      changes: params.changes,
-    },
-    select: {
-      id: true,
-    },
-  })
+    const record = await adminDb.auditLog.create({
+        data: {
+            action: params.action,
+            resourceType: params.resourceType,
+            resourceId: params.resourceId,
+            userId: params.userId,
+            changes: params.changes,
+        },
+        select: {
+            id: true,
+        },
+    });
 
-  return record.id
+    return record.id;
 }

@@ -4,9 +4,9 @@
  * Session utilities for server-side auth checks.
  */
 
-import { getServerSession } from "next-auth"
-import { redirect } from "next/navigation"
-import { authConfig } from "./config"
+import { getServerSession } from 'next-auth';
+import { redirect } from 'next/navigation';
+import { authConfig } from './config';
 
 /**
  * Retrieves the current server session using shared auth config.
@@ -14,7 +14,7 @@ import { authConfig } from "./config"
  * @returns Session object or null when unauthenticated
  */
 export function getCurrentSession() {
-  return getServerSession(authConfig)
+    return getServerSession(authConfig);
 }
 
 /**
@@ -23,10 +23,10 @@ export function getCurrentSession() {
  * @returns Authenticated session containing user identity claims
  */
 export async function requireAuthSession() {
-  const session = await getCurrentSession()
-  if (!session?.user?.id) {
-    redirect("/signin")
-  }
+    const session = await getCurrentSession();
+    if (!session?.user?.id) {
+        redirect('/signin');
+    }
 
-  return session
+    return session;
 }

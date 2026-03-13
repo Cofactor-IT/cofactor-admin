@@ -6,21 +6,18 @@
  * during hot reload.
  */
 
-import { PrismaClient } from "@prisma/client"
+import { PrismaClient } from '@prisma/client';
 
 const globalForPrisma = globalThis as unknown as {
-  adminPrisma: PrismaClient | undefined
-}
+    adminPrisma: PrismaClient | undefined;
+};
 
 export const adminDb =
-  globalForPrisma.adminPrisma ??
-  new PrismaClient({
-    log:
-      process.env.NODE_ENV === "development"
-        ? ["query", "error", "warn"]
-        : ["error"],
-  })
+    globalForPrisma.adminPrisma ??
+    new PrismaClient({
+        log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+    });
 
-if (process.env.NODE_ENV !== "production") {
-  globalForPrisma.adminPrisma = adminDb
+if (process.env.NODE_ENV !== 'production') {
+    globalForPrisma.adminPrisma = adminDb;
 }

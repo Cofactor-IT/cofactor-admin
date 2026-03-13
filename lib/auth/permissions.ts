@@ -4,9 +4,9 @@
  * Role-based permission guards for server actions and pages.
  */
 
-import { getCurrentSession } from "./session"
+import { getCurrentSession } from './session';
 
-const UNAUTHORIZED_ERROR = "Unauthorized"
+const UNAUTHORIZED_ERROR = 'Unauthorized';
 
 /**
  * Ensures the active session belongs to an IT operator.
@@ -15,12 +15,12 @@ const UNAUTHORIZED_ERROR = "Unauthorized"
  * @throws {Error} When session is missing or role is not IT
  */
 export async function requireIT() {
-  const session = await getCurrentSession()
-  if (!session?.user?.id || session.user.role !== "IT") {
-    throw new Error(UNAUTHORIZED_ERROR)
-  }
+    const session = await getCurrentSession();
+    if (!session?.user?.id || session.user.role !== 'IT') {
+        throw new Error(UNAUTHORIZED_ERROR);
+    }
 
-  return session
+    return session;
 }
 
 /**
@@ -29,10 +29,10 @@ export async function requireIT() {
  * @returns Authenticated session for ANALYST or IT users
  */
 export async function requireAnalyst() {
-  const session = await getCurrentSession()
-  if (!session?.user?.id) {
-    throw new Error(UNAUTHORIZED_ERROR)
-  }
+    const session = await getCurrentSession();
+    if (!session?.user?.id) {
+        throw new Error(UNAUTHORIZED_ERROR);
+    }
 
-  return session
+    return session;
 }

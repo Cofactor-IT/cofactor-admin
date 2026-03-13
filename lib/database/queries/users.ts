@@ -37,6 +37,10 @@ interface PasswordResetCandidateRecord {
   isActive: boolean
 }
 
+interface LastVisitRecord {
+  lastVisitAt: Date | null
+}
+
 /**
  * Finds a user by normalized email.
  *
@@ -163,6 +167,45 @@ export async function resetLoginAttempts(userId: string) {
     data: {
       failedLoginAttempts: 0,
       lockedUntil: null,
+    },
+    select: {
+      id: true,
+    },
+  })
+}
+
+/**
+ * Reads the most recent dashboard visit timestamp for a user.
+ *
+ * @param userId - User identifier to inspect
+ * @returns Last recorded visit timestamp or null when none exists yet
+ */
+export async function findLastVisitAt(userId: string): Promise<Date | null> {
+  const user = await adminDb.user.findUnique({
+    where: {
+      id: userId,
+    },
+    select: {
+      lastVisitAt: true,
+    },
+  }) as LastVisitRecord | null
+
+  return user?.lastVisitAt ?? null
+}
+
+/**
+ * Persists the current timestamp as the user's latest dashboard visit.
+ *
+ * @param userId - User identifier to update
+ * @returns Updated user id
+ */
+export async function updateLastVisit(userId: string) {
+  return adminDb.user.update({
+    where: {
+      id: userId,
+    },
+    data: {
+      lastVisitAt: new Date(),
     },
     select: {
       id: true,

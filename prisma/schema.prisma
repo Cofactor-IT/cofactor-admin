@@ -19,6 +19,7 @@ model User {
   lockedUntil         DateTime?
   emailVerified       DateTime?
   image               String?
+  lastVisitAt         DateTime?
   createdAt           DateTime             @default(now())
   updatedAt           DateTime             @updatedAt
   createdById         String?
@@ -35,6 +36,7 @@ model User {
   @@index([role])
   @@index([isActive])
   @@index([lockedUntil])
+  @@index([lastVisitAt])
 }
 
 model PasswordResetToken {

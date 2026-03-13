@@ -20,6 +20,9 @@ export interface DashboardStat {
   title: string
   count: number
   secondaryLabel: string
+  trendLabel: string
+  actionLabel: string
+  accent: "primary" | "default"
   href: "/submissions" | "/pipeline" | "/scouts"
 }
 
@@ -169,11 +172,21 @@ function humanizeAction(action: string): string {
 }
 
 function formatChangedAt(date: Date): string {
+  const now = new Date()
+  const elapsedMs = now.getTime() - date.getTime()
+  const elapsedMinutes = Math.floor(elapsedMs / (1000 * 60))
+  const elapsedHours = Math.floor(elapsedMinutes / 60)
+  const elapsedDays = Math.floor(elapsedHours / 24)
+
+  if (elapsedMinutes < 1) return "Just now"
+  if (elapsedMinutes < 60) return `${elapsedMinutes}m ago`
+  if (elapsedHours < 24) return `${elapsedHours}h ago`
+  if (elapsedDays === 1) return "Yesterday"
+  if (elapsedDays < 7) return `${elapsedDays}d ago`
+
   return new Intl.DateTimeFormat("en-US", {
     month: "short",
     day: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
   }).format(date)
 }
 
@@ -254,7 +267,7 @@ function toSubmissionPreviewItem(submission: SubmissionReference): DashboardPrev
     id: submission.id,
     title: displaySubmissionName(submission, submission.id),
     meta: submission.researcherName ?? "Research submission",
-    detail: `${humanizeSubmissionStatus(submission.status)} ? ${formatDate(submission.submittedAt ?? submission.createdAt)}`,
+    detail: `${humanizeSubmissionStatus(submission.status)} - ${formatDate(submission.submittedAt ?? submission.createdAt)}`,
     href: "/submissions",
   }
 }
@@ -265,7 +278,7 @@ function toDealPreviewItem(deal: DealReference, submissions: Map<string, Submiss
     id: deal.id,
     title: displaySubmissionName(submission, deal.id),
     meta: deal.owner?.name ?? deal.owner?.email ?? "Assigned deal owner",
-    detail: `${humanizeDealStage(deal.stage)} ? ${formatDate(deal.updatedAt)}`,
+    detail: `${humanizeDealStage(deal.stage)} - ${formatDate(deal.updatedAt)}`,
     href: "/pipeline",
   }
 }
@@ -275,7 +288,7 @@ function toScoutPreviewItem(scout: ScoutReference): DashboardPreviewItem {
     id: scout.id,
     title: scout.fullName,
     meta: scout.university ?? scout.email,
-    detail: `Approved scout ? ${formatDate(scout.scoutApprovedAt)}`,
+    detail: `Approved scout - ${formatDate(scout.scoutApprovedAt)}`,
     href: "/scouts",
   }
 }
@@ -570,19 +583,36 @@ export async function findDashboardStats(): Promise<DashboardStat[]> {
       title: "Active Submissions",
       count: activeSubmissions,
       secondaryLabel: scoutConfigured ? "In Scout review flow" : SCOUT_UNAVAILABLE_LABEL,
+      trendLabel: submissionsThisWeek > 0 ? `${submissionsThisWeek} submitted this week` : "No new submissions this week",
+      actionLabel: "View all",
+      accent: "primary",
       href: "/submissions",
     },
-    { title: "Deals in Progress", count: dealsInProgress, secondaryLabel: "Tracked in Admin", href: "/pipeline" },
+    {
+      title: "Deals in Progress",
+      count: dealsInProgress,
+      secondaryLabel: "Tracked in Admin",
+      trendLabel: dealsInProgress > 0 ? `${dealsInProgress} active in pipeline` : "Pipeline is currently clear",
+      actionLabel: "View all",
+      accent: "default",
+      href: "/pipeline",
+    },
     {
       title: "Active Scouts",
       count: activeScouts,
       secondaryLabel: scoutConfigured ? "Approved Scout network" : SCOUT_UNAVAILABLE_LABEL,
+      trendLabel: activeScouts > 0 ? `${activeScouts} approved scout profiles` : "Scout network still building",
+      actionLabel: "View all",
+      accent: "default",
       href: "/scouts",
     },
     {
       title: "Submissions This Week",
       count: submissionsThisWeek,
       secondaryLabel: scoutConfigured ? "Submitted since Monday" : SCOUT_UNAVAILABLE_LABEL,
+      trendLabel: activeSubmissions > 0 ? `${activeSubmissions} currently in review` : "No active queue pressure",
+      actionLabel: "View all",
+      accent: "default",
       href: "/submissions",
     },
   ]

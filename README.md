@@ -116,7 +116,7 @@ Placeholder favicon and logos are currently copied from Cofactor Scout:
 
 - `app/favicon.ico`
 - `public/branding/cofactor-admin-placeholder-navbar-logo.png`
-- `public/branding/cofactor-admin-placeholder-hero-logo.png`
+- `public/branding/cofactor-header-logo.png`
 - `public/branding/cofactor-admin-placeholder-navbar-logo.svg`
 - `public/branding/cofactor-admin-placeholder-hero-logo.svg`
 
@@ -220,6 +220,7 @@ Both run:
   - Dashboard landing page with live stat cards, module previews, and recent activity feed
   - Admin + Scout readonly query composition for fresh counts on page load
   - Card-based dashboard layout with graceful empty states
+  - Contextual greeting driven by overdue CRM work, stale Scout reviews, new inflow, and queue pressure
 - `CA-11` Password reset
   - `/auth/forgot-password` request flow with generic anti-enumeration messaging
   - `/auth/reset-password` token + expiry validation with one-time token consumption

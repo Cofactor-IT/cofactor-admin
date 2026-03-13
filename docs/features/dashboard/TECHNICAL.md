@@ -16,6 +16,12 @@ Exports:
 - `findDashboardPreviewSections()`
 - `findRecentDashboardActivity()`
 
+Additional greeting-specific modules:
+
+- `lib/database/queries/greeting.ts`
+- `lib/utils/greeting.ts`
+- `lib/database/queries/users.ts` (`lastVisitAt` read/write helpers)
+
 ### Stats
 
 - Active Submissions:
@@ -59,6 +65,20 @@ If `SCOUT_DB_READONLY_URL` is not configured, Scout-backed preview cards stay vi
 - `components/dashboard/DashboardStatCard.tsx`
 - `components/dashboard/DashboardActivityFeed.tsx`
 
+`DashboardOverview` now receives a precomputed greeting string from the page route. The greeting is assembled server-side so it reflects live data on every page load.
+
+## Greeting Signal
+
+Greeting priority order:
+
+1. Overdue CRM next steps owned by the signed-in user
+2. Scout submissions stuck in review for more than 48 hours
+3. New Scout submissions since the user's previous dashboard visit
+4. Current Scout queue waiting for review
+5. All-clear fallback
+
+`lastVisitAt` is stored on the Admin `User` model and updated after the dashboard greeting is computed, so "since your last visit" always uses the previous visit timestamp rather than the current request time.
+
 All dashboard surfaces are card-based and use the shared `components/ui/Card.tsx` primitive.
 The layout is intentionally board-like: stat cards first, then a two-column card region with a primary submission card, secondary deal/scout cards, and a dedicated activity card.
 Dashboard-specific polish is implemented in `app/globals.css` and includes:
@@ -68,6 +88,15 @@ Dashboard-specific polish is implemented in `app/globals.css` and includes:
 - layered navy gradients for stat and module cards
 - restrained teal glow on primary stat values and inline links
 - compact empty-state blocks with a single recovery action
+
+## Sign-In Context Surface
+
+The public sign-in screen now uses the same Admin brand language as the dashboard:
+
+- centered branded wordmark above the auth card
+- low-opacity grid texture in the page background
+- restrained teal glow behind the form stage
+- existing teal input focus treatment via `.admin-input:focus`
 
 ## Known Limitation
 

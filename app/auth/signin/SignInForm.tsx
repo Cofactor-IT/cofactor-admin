@@ -7,6 +7,7 @@
  */
 
 import { useMemo, useState } from "react"
+import Image from "next/image"
 import { signIn } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { Button } from "../../../components/ui/Button"
@@ -68,48 +69,61 @@ export function SignInForm(props: SignInFormProps) {
   }
 
   return (
-    <main className="admin-shell">
+    <main className="admin-shell admin-auth-shell">
       <section className="admin-page-content admin-auth-content">
-        <form className="admin-card admin-auth-form" onSubmit={handleSubmit}>
-          <h1 className="m-0">Sign In</h1>
-          <p className="body m-0">
-            Use your @cofactor.world account.
-          </p>
+        <div className="admin-auth-stage">
+          <div className="admin-auth-brand">
+            <Image
+              src="/branding/cofactor-header-logo.png"
+              alt="Cofactor Admin wordmark"
+              width={260}
+              height={54}
+              priority
+            />
+            <span className="admin-auth-brand-label">Admin</span>
+          </div>
 
-          <label className="label" htmlFor="email">
-            Email
-          </label>
-          <input
-            id="email"
-            className="admin-input"
-            type="email"
-            autoComplete="email"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            required
-          />
+          <form className="admin-card admin-auth-form" onSubmit={handleSubmit}>
+            <h1 className="m-0">Sign In</h1>
+            <p className="body m-0">
+              Use your @cofactor.world account.
+            </p>
 
-          <label className="label" htmlFor="password">
-            Password
-          </label>
-          <input
-            id="password"
-            className="admin-input"
-            type="password"
-            autoComplete="current-password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            required
-          />
+            <label className="label" htmlFor="email">
+              Email
+            </label>
+            <input
+              id="email"
+              className="admin-input"
+              type="email"
+              autoComplete="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              required
+            />
 
-          {displayedError ? <p className="caption">{displayedError}</p> : null}
+            <label className="label" htmlFor="password">
+              Password
+            </label>
+            <input
+              id="password"
+              className="admin-input"
+              type="password"
+              autoComplete="current-password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              required
+            />
 
-          <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Signing in..." : "Sign In"}
-          </Button>
-          <TextButton href="/auth/forgot-password">Forgot password?</TextButton>
-          <TextButton href="/auth/signup">IT users: create account</TextButton>
-        </form>
+            {displayedError ? <p className="caption">{displayedError}</p> : null}
+
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Signing in..." : "Sign In"}
+            </Button>
+            <TextButton href="/auth/forgot-password">Forgot password?</TextButton>
+            <TextButton href="/auth/signup">IT users: create account</TextButton>
+          </form>
+        </div>
       </section>
     </main>
   )

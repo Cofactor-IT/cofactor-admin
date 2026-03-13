@@ -15,13 +15,24 @@ interface DashboardPreviewSectionProps {
 }
 
 function emptyState(section: DashboardPreviewSectionModel) {
+  const icon = section.href === "/submissions"
+    ? "submission"
+    : section.href === "/pipeline"
+      ? "deal"
+      : "scout"
+  const actionLabel = section.href === "/submissions"
+    ? "View submissions"
+    : section.href === "/pipeline"
+      ? "View pipeline"
+      : "View scout profiles"
+
   return (
     <DashboardEmptyState
-      iconLabel={section.title.charAt(0)}
+      icon={icon}
       title={`No ${section.title.toLowerCase()} yet`}
       message={section.emptyMessage}
       href={section.href}
-      actionLabel="Open module"
+      actionLabel={actionLabel}
     />
   )
 }

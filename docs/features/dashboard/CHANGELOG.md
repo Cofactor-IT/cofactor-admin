@@ -9,3 +9,6 @@
 - Added linked preview panels so the dashboard surfaces real submission, deal, and scout rows instead of counts only
 - Reworked the dashboard into a denser card board instead of a simple top-down stack
 - Added dashboard-specific polish: layered surfaces, softer borders, better empty states, and subtle motion
+- Added server-side dashboard greeting logic with priority-based operational signals
+- Added persisted `lastVisitAt` tracking so "since your last visit" uses real prior-visit data
+- Added branded sign-in background treatment with grid texture, glow, and centered wordmark

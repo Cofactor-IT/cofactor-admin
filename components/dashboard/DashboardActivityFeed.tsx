@@ -17,11 +17,11 @@ interface DashboardActivityFeedProps {
 function emptyActivityState() {
   return (
     <DashboardEmptyState
-      iconLabel="A"
+      icon="activity"
       title="No recent activity yet"
       message="Submission and deal updates will appear here as Admin actions are recorded."
       href="/submissions"
-      actionLabel="Open submissions"
+      actionLabel="View submissions"
     />
   )
 }

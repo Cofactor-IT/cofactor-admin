@@ -473,6 +473,13 @@
         gap: 16px;
     }
 
+    .admin-audit-page {
+        height: 100%;
+        min-height: 0;
+        grid-template-rows: auto minmax(0, 1fr);
+        overflow: hidden;
+    }
+
     .admin-dashboard-shell {
         position: relative;
         animation: admin-fade-in-up 180ms ease;
@@ -736,6 +743,241 @@
 
     .admin-card-body {
         padding: 16px 24px;
+    }
+
+    .admin-audit-feed-body {
+        display: grid;
+        height: 100%;
+        min-height: 0;
+        padding: 16px 0 16px 24px;
+    }
+
+    .admin-audit-table-shell {
+        min-height: 0;
+        overflow: hidden;
+    }
+
+    .admin-audit-table-card {
+        height: 100%;
+    }
+
+    .admin-audit-filter-panel {
+        display: grid;
+        gap: 14px;
+        padding: 16px 20px;
+    }
+
+    .admin-audit-filter-grid {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .admin-audit-filter-field {
+        display: grid;
+        gap: 6px;
+        min-width: 0;
+    }
+
+    .admin-audit-filter-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+
+    .admin-audit-filter-submit {
+        min-height: 36px;
+        padding: 0 18px;
+        font-size: 14px;
+    }
+
+    .admin-audit-table-head {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        display: grid;
+        grid-template-columns:
+            minmax(170px, 1.1fr) minmax(160px, 1fr) minmax(160px, 1fr) minmax(180px, 1.1fr)
+            110px minmax(260px, 1.7fr);
+        gap: 12px;
+        padding: 0 0 10px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        background: var(--admin-surface);
+    }
+
+    .admin-audit-table-scroll {
+        min-height: 0;
+        overflow: auto;
+        padding-right: 24px;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(143, 163, 191, 0.65) rgba(15, 25, 35, 0.22);
+    }
+
+    .admin-audit-table-scroll::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+    }
+
+    .admin-audit-table-scroll::-webkit-scrollbar-track {
+        background: rgba(15, 25, 35, 0.18);
+        border-radius: 9999px;
+    }
+
+    .admin-audit-table-scroll::-webkit-scrollbar-thumb {
+        background: linear-gradient(180deg, rgba(143, 163, 191, 0.78), rgba(45, 63, 95, 0.92));
+        border: 2px solid rgba(27, 42, 74, 0.92);
+        border-radius: 9999px;
+    }
+
+    .admin-audit-table-scroll::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(180deg, rgba(240, 244, 248, 0.78), rgba(143, 163, 191, 0.92));
+    }
+
+    .admin-audit-list {
+        display: grid;
+        gap: 0;
+    }
+
+    .admin-audit-item {
+        display: grid;
+        gap: 0;
+        transition:
+            border-color 150ms ease,
+            background-color 150ms ease,
+            transform 150ms ease;
+    }
+
+    .admin-audit-item:not(:first-child) {
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .admin-audit-summary {
+        list-style: none;
+        cursor: pointer;
+        display: grid;
+        grid-template-columns:
+            minmax(170px, 1.1fr) minmax(160px, 1fr) minmax(160px, 1fr) minmax(180px, 1.1fr)
+            110px minmax(260px, 1.7fr);
+        gap: 12px;
+        align-items: center;
+        min-height: 44px;
+        padding: 8px 0;
+    }
+
+    .admin-audit-summary::-webkit-details-marker {
+        display: none;
+    }
+
+    .admin-audit-item[open] {
+        background: rgba(255, 255, 255, 0.02);
+    }
+
+    .admin-audit-item[open] + .admin-audit-item {
+        border-top-color: transparent;
+    }
+
+    .admin-audit-item:hover .admin-audit-summary {
+        background: rgba(255, 255, 255, 0.02);
+    }
+
+    .admin-audit-summary-cell {
+        min-width: 0;
+    }
+
+    .admin-audit-time,
+    .admin-audit-context-preview {
+        color: var(--admin-text-secondary);
+    }
+
+    .admin-audit-actor,
+    .admin-audit-action,
+    .admin-audit-resource-summary {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .admin-audit-context-preview {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .admin-audit-status {
+        display: inline-flex;
+        align-items: center;
+        justify-self: start;
+        border-radius: 9999px;
+        padding: 4px 10px;
+        font-family: var(--font-rethink-sans), sans-serif;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.03em;
+        line-height: 1;
+    }
+
+    .admin-audit-status-success {
+        background: rgba(209, 250, 229, 0.15);
+        color: #6ee7b7;
+    }
+
+    .admin-audit-status-failure {
+        background: rgba(254, 226, 226, 0.15);
+        color: #fca5a5;
+    }
+
+    .admin-audit-details {
+        display: grid;
+        gap: 12px;
+        padding: 12px 0 14px;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .admin-audit-detail-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .admin-audit-detail-block {
+        display: grid;
+        gap: 6px;
+        min-width: 0;
+        padding: 10px 12px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 4px;
+        background: rgba(15, 25, 35, 0.14);
+    }
+
+    .admin-audit-meta-label {
+        color: var(--admin-text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+    }
+
+    .admin-audit-meta-value {
+        color: var(--admin-text-primary);
+    }
+
+    .admin-audit-detail-subvalue,
+    .admin-audit-context-full {
+        overflow-wrap: anywhere;
+    }
+
+    .admin-audit-change-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 12px;
+    }
+
+    .admin-audit-change-item {
+        display: grid;
+        gap: 6px;
+        min-width: 0;
+        padding: 10px 12px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 4px;
+        background: rgba(15, 25, 35, 0.12);
     }
 
     .admin-card-footer {

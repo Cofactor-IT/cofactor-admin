@@ -196,6 +196,10 @@ Both run:
   - Repository-wide Prettier configuration for Admin formatting rules
   - Format and format-check scripts for local and CI workflows
   - ESLint and Prettier integrated without conflicting style rules
+- `CA-21` Set up Husky pre-commit hooks
+  - `lint-staged` runs formatting and lint fixes only on staged files
+  - commits are blocked on staged-file failures and full type-check failures
+  - local commit-time enforcement mirrors the repo quality baseline
 - `CA-7` Domain-restricted sign up
   - `@cofactor.world` validation in server-side Zod schema
   - Signup server action + user creation + audit logging

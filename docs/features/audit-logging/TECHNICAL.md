@@ -50,6 +50,23 @@ The IT-only review page lives at:
 It is linked from the Admin shell footer utility section and protected by the existing IT route
 guarding.
 
+The review page renders as a dense operator table:
+
+- fixed column headers for timestamp, actor, operation, resource, status, and context
+- thin summary rows for scan-first review
+- expandable detail drawer under each row
+- detail drawer surfaces actor identity, resource detail, request metadata, and structured `changes`
+- filter panel supports server-driven actor, status, context, and date range filtering via URL params
+- page layout is height-bounded so only the table region scrolls while filters remain visible
+- the review UI is split into reusable audit components:
+  - `AuditLogFilters`
+  - `AuditLogTable`
+  - `AuditLogRow`
+  - `AuditLogStatusBadge`
+  - `AuditLogDetailBlock`
+
+That keeps the page visually aligned with the Admin dashboard and card system.
+
 ## Coverage
 
 Current centralized audit writes exist in:

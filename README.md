@@ -4,26 +4,14 @@ Internal operations platform for Cofactor.
 
 ## Current Status
 
-Core Admin foundation is in place.
-
-Current live baseline includes:
-
-- Admin auth and session management
-- role-gated account creation and audit review
-- dashboard with live Scout/Admin data
-- fixed desktop Admin shell with sidebar and tabbed Scouts workspace
-- standards and security epic completed in code
+Project bootstrap is in progress.  
+Database foundation and Prisma schema are set up for Admin's own data store.
 
 ## Tech Stack (Current)
 
-- Next.js 16.1.6
-- TypeScript 5.x
-- Prisma ORM + PostgreSQL
-- NextAuth.js 4.24.13
-- Zod
-- Vitest
-- ESLint + Prettier + Husky + lint-staged
-- Nodemailer
+- Node.js + npm
+- Prisma ORM
+- PostgreSQL (Supabase for hosted, Docker for local)
 
 ## Local Setup
 
@@ -144,12 +132,11 @@ npm run dev:both
 
 ## Branding Placeholders
 
-Current branding assets in use:
+Placeholder favicon and logos are currently copied from Cofactor Scout:
 
 - `app/favicon.ico`
-- `public/branding/cofactor-header-logo.png`
-- `public/branding/cofactor-admin-placeholder-hero-logo.png`
 - `public/branding/cofactor-admin-placeholder-navbar-logo.png`
+- `public/branding/cofactor-header-logo.png`
 - `public/branding/cofactor-admin-placeholder-navbar-logo.svg`
 - `public/branding/cofactor-admin-placeholder-hero-logo.svg`
 
@@ -279,9 +266,9 @@ Both run:
   - Fixed `240px` sidebar offset with title/actions header pattern
   - Consistent desktop content padding and global Admin background
 - `CA-36` Sidebar
-  - Fixed Admin navigation with icons, active states, footer utility actions, and audit-log access for IT users
-  - Persistent brand row with top-right header identity instead of sidebar identity bar
-  - Canonical sidebar destinations established for Dashboard, Submissions, Scouts, CRM, Pipeline, and Templates
+  - Fixed five-item Admin navigation with icons and active states
+  - Persistent brand row and bottom user identity bar
+  - Placeholder pages added for all sidebar destinations
 - `CA-37` Routing structure
   - Added `/dashboard` authenticated landing route and `/signin` public sign-in entry
   - Phase 1 module routes now resolve at `/submissions`, `/scouts`, `/crm`, `/pipeline`, and `/templates`
@@ -293,7 +280,6 @@ Both run:
   - Card-based dashboard layout with graceful empty states
   - Contextual greeting driven by overdue CRM work, stale Scout reviews, new inflow, and queue pressure
   - Dashboard top-row metrics now cover active submissions, deals in progress, active scouts, and pending scout applications
-  - Queue rows now keep status/date detail on one line while long titles truncate with ellipsis
 - `CA-11` Password reset
   - `/auth/forgot-password` request flow with generic anti-enumeration messaging
   - `/auth/reset-password` token + expiry validation with one-time token consumption

@@ -14,5 +14,3 @@
 - Added branded sign-in background treatment with grid texture, glow, and centered wordmark
 - Replaced the duplicate scout summary stat with pending Scout applications from Scout user application status
 - Restored the top-row dashboard mix to active submissions, deals in progress, active scouts, and scout applications
-- Tightened queue-row presentation so long submission titles truncate cleanly and metadata stays on one line
-- Standardized stat-card secondary copy toward a more neutral operational tone

@@ -36,6 +36,13 @@ IT users can review recent audit entries at `/settings/audit-log`.
 This page is read only and lives under the existing Admin shell so it inherits the same route
 protection and layout patterns as the rest of the app.
 
+The review page now supports:
+
+- actor filtering
+- status filtering for `SUCCESS` and `FAILURE`
+- context filtering
+- date range filtering
+
 ## Next Step
 
 Later feature work should reuse `lib/security/audit-log.ts` instead of writing directly to the

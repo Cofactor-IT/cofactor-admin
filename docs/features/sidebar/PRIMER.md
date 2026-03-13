@@ -8,9 +8,9 @@ Provide a fixed Admin navigation rail that persists across all protected pages.
 
 - Fixed left sidebar, full height, `240px` wide
 - Top wordmark area
-- Primary navigation items with icons
+- Five primary navigation items with icons
 - Active and hover visual states
-- Lower utility area for IT-only actions and sign-out
+- Lower utility area for Admin-only actions and sign-out
 
 ## Routes
 
@@ -20,14 +20,3 @@ Provide a fixed Admin navigation rail that persists across all protected pages.
 - `/crm`
 - `/pipeline`
 - `/templates`
-
-## Utility Actions
-
-IT users also see:
-
-- `Team Members`
-- `Audit Log`
-
-All users see:
-
-- `Sign Out`

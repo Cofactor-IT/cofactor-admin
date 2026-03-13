@@ -7,4 +7,4 @@ No known sidebar defects.
 ## Notes
 
 - Sidebar is intentionally never collapsed at MVP.
-- IT-only utility actions remain outside the primary navigation list by design.
+- Secondary IT utility link for team-member management is outside the primary five-item navigation list.

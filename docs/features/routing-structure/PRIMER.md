@@ -18,6 +18,5 @@ Establish the stable Phase 1 route map before each workspace is implemented.
 
 - `/dashboard` is the default authenticated landing route.
 - `/signin` is the canonical sign-in entry point.
-- Dashboard and Scouts are now live structured surfaces rather than placeholders.
-- Remaining Phase 1 module routes can still render protected placeholder content until their epics ship.
+- Each Phase 1 module route renders a protected placeholder page until its epic ships.
 - Legacy route names redirect to the canonical paths so earlier links do not break.

@@ -15,7 +15,7 @@
   - `url = env("ADMIN_DATABASE_URL_POOLED")`
   - `directUrl = env("ADMIN_DATABASE_URL")`
 - `lib/database/adminDb.ts` singleton Prisma read/write client
-- reserved the `lib/database/scoutDb.ts` path that was later populated by CA-14
+- `lib/database/scoutDb.ts` placeholder for upcoming read-only Scout DB client
 - Initial SQL migration scaffold:
   - `prisma/migrations/20260312_init/migration.sql`
   - Includes DB-level constraints enforcing `Note` single-target behavior

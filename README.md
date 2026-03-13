@@ -186,6 +186,10 @@ Both run:
   - GitHub Actions workflow
   - Bitbucket pipeline config
   - lint/type-check/build quality gates
+- `CA-19` Configure ESLint
+  - Admin-specific ESLint rules for explicit `any` and unused variables
+  - TypeScript `noImplicitReturns` enabled
+  - Husky pre-commit hook blocks commits on lint/type-check failures
 - `CA-7` Domain-restricted sign up
   - `@cofactor.world` validation in server-side Zod schema
   - Signup server action + user creation + audit logging

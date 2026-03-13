@@ -90,6 +90,7 @@ npm run docker:down
 
 - `npm run dev` (webpack, default for stability)
 - `npm run dev:turbo` (optional Turbopack mode)
+- `npm run dev:both` (run Admin on this repo and Scout from `../cofactor-scout` together)
 - `npm run start`
 - `npm run prisma:format`
 - `npm run prisma:format:scout`
@@ -111,6 +112,23 @@ npm run docker:down
 - `npm run docker:up:all`
 - `npm run docker:logs`
 - `npm run docker:down`
+
+## Local Admin + Scout Pairing
+
+For a true shared local workflow, Admin must point its Scout connections at the same database the
+local Scout app uses.
+
+Current recommended local pairing:
+
+- Admin app: `http://localhost:3001`
+- Scout app: `http://localhost:3002`
+- Shared Scout database: `postgresql://cofactor:...@localhost:5434/cofactor_db?schema=public`
+
+Use this to run both apps together from the Admin repo:
+
+```bash
+npm run dev:both
+```
 
 ## Branding Placeholders
 
@@ -234,11 +252,13 @@ Both run:
   - Added `/dashboard` authenticated landing route and `/signin` public sign-in entry
   - Phase 1 module routes now resolve at `/submissions`, `/scouts`, `/crm`, `/pipeline`, and `/templates`
   - Legacy route aliases redirect to the new route contract
+  - `/scouts` now acts as a tabbed domain page for both scout applications and scout profiles
 - `CA-38` Dashboard
   - Dashboard landing page with live stat cards, module previews, and recent activity feed
   - Admin + Scout readonly query composition for fresh counts on page load
   - Card-based dashboard layout with graceful empty states
   - Contextual greeting driven by overdue CRM work, stale Scout reviews, new inflow, and queue pressure
+  - Dashboard top-row metrics now cover active submissions, deals in progress, active scouts, and pending scout applications
 - `CA-11` Password reset
   - `/auth/forgot-password` request flow with generic anti-enumeration messaging
   - `/auth/reset-password` token + expiry validation with one-time token consumption

@@ -6,7 +6,7 @@
  */
 
 import { DealStage } from '@prisma/client';
-import { Role as ScoutRole, ScoutApplicationStatus, SubmissionStatus } from '@prisma/scout-client';
+import { ScoutApplicationStatus, SubmissionStatus } from '@prisma/scout-client';
 
 // ============================================
 // TYPES
@@ -19,7 +19,12 @@ export interface DashboardStat {
     trendLabel: string;
     actionLabel: string;
     accent: 'primary' | 'default';
-    href: '/submissions' | '/pipeline' | '/scouts';
+    href:
+        | '/submissions'
+        | '/pipeline'
+        | '/scouts'
+        | '/scouts?tab=applications'
+        | '/scouts?tab=profiles';
 }
 
 export interface DashboardActivityItem {
@@ -36,13 +41,13 @@ export interface DashboardPreviewItem {
     title: string;
     meta: string;
     detail: string;
-    href: '/submissions' | '/pipeline' | '/scouts';
+    href: '/submissions' | '/pipeline' | '/scouts' | '/scouts?tab=profiles';
 }
 
 export interface DashboardPreviewSection {
     title: string;
     description: string;
-    href: '/submissions' | '/pipeline' | '/scouts';
+    href: '/submissions' | '/pipeline' | '/scouts' | '/scouts?tab=profiles';
     items: DashboardPreviewItem[];
     emptyMessage: string;
 }
@@ -290,7 +295,7 @@ function toScoutPreviewItem(scout: ScoutReference): DashboardPreviewItem {
         title: scout.fullName,
         meta: scout.university ?? scout.email,
         detail: `Approved scout - ${formatDate(scout.scoutApprovedAt)}`,
-        href: '/scouts',
+        href: '/scouts?tab=profiles',
     };
 }
 
@@ -332,15 +337,23 @@ async function countDealsInProgress(): Promise<number> {
     return adminDb.deal.count();
 }
 
+async function countPendingScoutApplications(): Promise<number> {
+    return safeScoutCount(async () => {
+        const scoutDb = await scoutDatabase();
+        return scoutDb.user.count({
+            where: {
+                scoutApplicationStatus: ScoutApplicationStatus.PENDING,
+            },
+        });
+    });
+}
+
 async function countActiveScouts(): Promise<number> {
     return safeScoutCount(async () => {
         const scoutDb = await scoutDatabase();
         return scoutDb.user.count({
             where: {
-                OR: [
-                    { scoutApplicationStatus: ScoutApplicationStatus.APPROVED },
-                    { role: ScoutRole.SCOUT },
-                ],
+                scoutApplicationStatus: ScoutApplicationStatus.APPROVED,
             },
         });
     });
@@ -505,10 +518,7 @@ async function activeScoutPreviewItems(): Promise<DashboardPreviewItem[]> {
         const scoutDb = await scoutDatabase();
         const scouts = await scoutDb.user.findMany({
             where: {
-                OR: [
-                    { scoutApplicationStatus: ScoutApplicationStatus.APPROVED },
-                    { role: ScoutRole.SCOUT },
-                ],
+                scoutApplicationStatus: ScoutApplicationStatus.APPROVED,
             },
             orderBy: [{ scoutApprovedAt: 'desc' }, { createdAt: 'desc' }],
             take: PREVIEW_LIMIT,
@@ -568,13 +578,19 @@ export function setDashboardQueryOverridesForTesting(
  */
 export async function findDashboardStats(): Promise<DashboardStat[]> {
     const scoutConfigured = isScoutConfigured();
-    const [activeSubmissions, dealsInProgress, activeScouts, submissionsThisWeek] =
-        await Promise.all([
-            countActiveSubmissions(),
-            countDealsInProgress(),
-            countActiveScouts(),
-            countSubmissionsThisWeek(),
-        ]);
+    const [
+        activeSubmissions,
+        dealsInProgress,
+        activeScouts,
+        pendingScoutApplications,
+        submissionsThisWeek,
+    ] = await Promise.all([
+        countActiveSubmissions(),
+        countDealsInProgress(),
+        countActiveScouts(),
+        countPendingScoutApplications(),
+        countSubmissionsThisWeek(),
+    ]);
 
     return [
         {
@@ -611,19 +627,19 @@ export async function findDashboardStats(): Promise<DashboardStat[]> {
                     : 'Scout network still building',
             actionLabel: 'View all',
             accent: 'default',
-            href: '/scouts',
+            href: '/scouts?tab=profiles',
         },
         {
-            title: 'Submissions This Week',
-            count: submissionsThisWeek,
-            secondaryLabel: scoutConfigured ? 'Submitted since Monday' : SCOUT_UNAVAILABLE_LABEL,
+            title: 'Scout Applications',
+            count: pendingScoutApplications,
+            secondaryLabel: scoutConfigured ? 'Pending Scout review' : SCOUT_UNAVAILABLE_LABEL,
             trendLabel:
-                activeSubmissions > 0
-                    ? `${activeSubmissions} currently in review`
-                    : 'No active queue pressure',
+                submissionsThisWeek > 0
+                    ? `${submissionsThisWeek} submissions this week`
+                    : 'No pending scout applications',
             actionLabel: 'View all',
             accent: 'default',
-            href: '/submissions',
+            href: '/scouts?tab=applications',
         },
     ];
 }
@@ -661,7 +677,7 @@ export async function findDashboardPreviewSections(): Promise<DashboardPreviewSe
         {
             title: 'Scout Profiles',
             description: 'Most recently approved Scout accounts.',
-            href: '/scouts',
+            href: '/scouts?tab=profiles',
             items: scoutItems,
             emptyMessage: isScoutConfigured()
                 ? 'No approved Scouts yet. Approved profiles will appear here.'

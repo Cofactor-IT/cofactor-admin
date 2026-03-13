@@ -10,3 +10,4 @@
 - Brightened inactive nav items and reinforced hover feedback
 - Added a footer separator, shortened the IT utility label to `Team Members`, and added a sign-out icon
 - Added an inset left accent on the active sidebar item
+- Consolidated Scout navigation under a single `Scouts` sidebar domain entry

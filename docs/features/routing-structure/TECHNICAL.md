@@ -5,7 +5,7 @@
 - `/dashboard` -> authenticated dashboard placeholder page
 - `/signin` -> public credentials sign-in page
 - `/submissions` -> protected placeholder
-- `/scouts` -> protected placeholder
+- `/scouts` -> protected tabbed Scouts workspace (`?tab=applications|profiles`)
 - `/crm` -> protected placeholder
 - `/pipeline` -> protected placeholder
 - `/templates` -> protected placeholder

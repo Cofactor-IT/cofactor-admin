@@ -509,7 +509,7 @@
 
     .admin-dashboard-feature-row {
         display: grid;
-        grid-template-columns: minmax(0, 2fr) minmax(320px, 1fr);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 12px;
         align-items: start;
     }
@@ -649,7 +649,7 @@
     }
 
     .admin-preview-item:not(:first-child) {
-        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        border-top: 1px solid rgba(255, 255, 255, 0.12);
     }
 
     .admin-preview-item:hover {
@@ -684,7 +684,7 @@
     }
 
     .admin-activity-item:not(:first-child) {
-        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        border-top: 1px solid rgba(255, 255, 255, 0.12);
     }
 
     .admin-activity-item:hover {
@@ -739,6 +739,55 @@
         gap: 12px;
         border-top: 1px solid rgba(255, 255, 255, 0.08);
         padding: 16px 24px;
+    }
+
+    .admin-tab-card-header {
+        padding-top: 16px;
+    }
+
+    .admin-tab-list {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .admin-tab-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 36px;
+        padding: 0 16px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 9999px;
+        background: rgba(255, 255, 255, 0.02);
+        color: rgba(255, 255, 255, 0.72);
+        font-family: var(--font-rethink-sans), sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 1;
+        text-decoration: none;
+        transition:
+            background-color 150ms ease,
+            border-color 150ms ease,
+            color 150ms ease,
+            box-shadow 150ms ease;
+    }
+
+    .admin-tab-link:hover {
+        background: var(--admin-surface-raised);
+        border-color: rgba(255, 255, 255, 0.14);
+        color: var(--admin-text-primary);
+    }
+
+    .admin-tab-link-active {
+        background: rgba(13, 115, 119, 0.18);
+        border-color: rgba(13, 115, 119, 0.42);
+        color: var(--admin-text-primary);
+        box-shadow: 0 0 12px rgba(13, 115, 119, 0.18);
+    }
+
+    .admin-tab-panel {
+        min-height: 196px;
     }
 
     .admin-dashboard-empty-state {

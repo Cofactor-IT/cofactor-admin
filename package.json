@@ -5,6 +5,7 @@
     "scripts": {
         "dev": "next dev --webpack",
         "dev:turbo": "next dev --turbo",
+        "dev:both": "concurrently --kill-others-on-fail -n admin,scout -c cyan,green \"npm run dev\" \"npm --prefix ../cofactor-scout run dev -- --port 3002\"",
         "start": "next start",
         "docker:up": "docker compose up -d admin-db adminer",
         "docker:up:all": "docker compose up -d admin-db scout-db adminer",
@@ -21,6 +22,7 @@
         "scout:local:setup": "node scripts/setup-local-scout-db.mjs",
         "scout:readonly:test": "node scripts/test-scout-readonly.mjs",
         "scout:write:test": "node scripts/test-scout-write-scope.mjs",
+        "scout:dashboard:debug": "node --experimental-strip-types scripts/debug-dashboard-scout.ts",
         "lint": "eslint . --max-warnings=0",
         "format": "prettier --write .",
         "format:check": "prettier --check .",
@@ -59,6 +61,7 @@
         "@types/react": "^19.2.14",
         "@types/react-dom": "^19.2.3",
         "autoprefixer": "^10.4.27",
+        "concurrently": "^9.2.1",
         "dotenv": "^17.3.1",
         "eslint": "^9.39.4",
         "eslint-config-next": "^16.1.6",

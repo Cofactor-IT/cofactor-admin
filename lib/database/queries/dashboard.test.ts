@@ -43,9 +43,9 @@ describe('dashboard queries', () => {
     });
 
     it('returns four dashboard stat cards with module links', async () => {
-        fakeScoutDb.researchSubmission.count.mockResolvedValueOnce(14).mockResolvedValueOnce(3);
+        fakeScoutDb.researchSubmission.count.mockResolvedValueOnce(14).mockResolvedValueOnce(5);
         fakeAdminDb.deal.count.mockResolvedValue(6);
-        fakeScoutDb.user.count.mockResolvedValue(8);
+        fakeScoutDb.user.count.mockResolvedValueOnce(8).mockResolvedValueOnce(2);
 
         const stats = await findDashboardStats();
 
@@ -56,11 +56,15 @@ describe('dashboard queries', () => {
                 href: '/submissions',
             }),
             expect.objectContaining({ title: 'Deals in Progress', count: 6, href: '/pipeline' }),
-            expect.objectContaining({ title: 'Active Scouts', count: 8, href: '/scouts' }),
             expect.objectContaining({
-                title: 'Submissions This Week',
-                count: 3,
-                href: '/submissions',
+                title: 'Active Scouts',
+                count: 8,
+                href: '/scouts?tab=profiles',
+            }),
+            expect.objectContaining({
+                title: 'Scout Applications',
+                count: 2,
+                href: '/scouts?tab=applications',
             }),
         ]);
     });
@@ -135,12 +139,12 @@ describe('dashboard queries', () => {
         expect(sections[2]).toEqual(
             expect.objectContaining({
                 title: 'Scout Profiles',
-                href: '/scouts',
+                href: '/scouts?tab=profiles',
                 items: [
                     expect.objectContaining({
                         title: 'Sarah Ahmed',
                         meta: 'Imperial College London',
-                        href: '/scouts',
+                        href: '/scouts?tab=profiles',
                     }),
                 ],
             })
@@ -181,7 +185,7 @@ describe('dashboard queries', () => {
                     secondaryLabel: 'Scout connection unavailable',
                 }),
                 expect.objectContaining({
-                    title: 'Submissions This Week',
+                    title: 'Scout Applications',
                     count: 0,
                     secondaryLabel: 'Scout connection unavailable',
                 }),

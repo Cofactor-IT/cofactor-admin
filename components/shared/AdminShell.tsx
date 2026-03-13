@@ -35,7 +35,7 @@ interface NavItemDefinition {
 const NAV_ITEMS: NavItemDefinition[] = [
     { href: '/dashboard', label: 'Dashboard' },
     { href: '/submissions', label: 'Submissions' },
-    { href: '/scouts', label: 'Scout Profiles' },
+    { href: '/scouts', label: 'Scouts' },
     { href: '/crm', label: 'CRM' },
     { href: '/pipeline', label: 'Deal Pipeline' },
     { href: '/templates', label: 'Email Templates' },

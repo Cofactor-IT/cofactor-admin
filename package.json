@@ -26,7 +26,8 @@
     "type-check": "tsc --noEmit",
     "prebuild": "npm run prisma:generate:all",
     "build": "next build",
-    "test": "vitest run"
+    "test": "vitest run",
+    "prepare": "husky"
   },
   "dependencies": {
     "@prisma/client": "^6.7.0",
@@ -47,6 +48,7 @@
     "dotenv": "^17.3.1",
     "eslint": "^9.39.4",
     "eslint-config-next": "^16.1.6",
+    "husky": "^9.1.7",
     "pg": "^8.20.0",
     "postcss": "^8.5.8",
     "prisma": "^6.7.0",

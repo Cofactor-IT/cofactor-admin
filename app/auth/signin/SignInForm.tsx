@@ -9,7 +9,6 @@
 import { useMemo, useState } from "react"
 import Image from "next/image"
 import { signIn } from "next-auth/react"
-import { useRouter } from "next/navigation"
 import { Button } from "../../../components/ui/Button"
 import { TextButton } from "../../../components/ui/TextButton"
 
@@ -36,10 +35,6 @@ function resolveErrorMessage(errorCode?: string): string | null {
  * @returns Interactive sign-in form UI
  */
 export function SignInForm(props: SignInFormProps) {
-  const router = useRouter()
-
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [inlineError, setInlineError] = useState<string | null>(null)
 
@@ -50,22 +45,20 @@ export function SignInForm(props: SignInFormProps) {
     event.preventDefault()
     setInlineError(null)
     setIsSubmitting(true)
+    const formData = new FormData(event.currentTarget)
+    const emailValue = String(formData.get("email") ?? "")
+    const passwordValue = String(formData.get("password") ?? "")
 
-    const result = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-      callbackUrl: props.callbackUrl,
-    })
-
-    setIsSubmitting(false)
-    if (result?.error) {
-      setInlineError(resolveErrorMessage(result.error))
-      return
+    try {
+      await signIn("credentials", {
+        email: emailValue,
+        password: passwordValue,
+        callbackUrl: props.callbackUrl,
+      })
+    } catch {
+      setInlineError(INVALID_CREDENTIALS_MESSAGE)
+      setIsSubmitting(false)
     }
-
-    router.push(props.callbackUrl)
-    router.refresh()
   }
 
   return (
@@ -94,11 +87,10 @@ export function SignInForm(props: SignInFormProps) {
             </label>
             <input
               id="email"
+              name="email"
               className="admin-input"
               type="email"
               autoComplete="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
               required
             />
 
@@ -107,11 +99,10 @@ export function SignInForm(props: SignInFormProps) {
             </label>
             <input
               id="password"
+              name="password"
               className="admin-input"
               type="password"
               autoComplete="current-password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
               required
             />
 

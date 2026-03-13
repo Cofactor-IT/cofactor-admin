@@ -10,6 +10,7 @@ import { getToken } from "next-auth/jwt"
 
 const DASHBOARD_PATH = "/dashboard"
 const SIGN_IN_PATH = "/signin"
+const SESSION_COOKIE_NAME = "cofactor-admin-session"
 const PUBLIC_PATHS = new Set([SIGN_IN_PATH, "/auth/forgot-password", "/auth/reset-password"])
 const ROUTE_REDIRECTS = new Map([
   ["/auth/signin", SIGN_IN_PATH],
@@ -29,6 +30,10 @@ function isITOnlyPath(pathname: string): boolean {
   )
 }
 
+function shouldPersistCallback(pathname: string): boolean {
+  return pathname !== "/" && pathname !== DASHBOARD_PATH
+}
+
 /**
  * Redirects unauthenticated users to sign-in and enforces IT-only routes.
  *
@@ -44,7 +49,11 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(redirectUrl)
   }
 
-  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET })
+  const token = await getToken({
+    req: request,
+    secret: process.env.NEXTAUTH_SECRET,
+    cookieName: SESSION_COOKIE_NAME,
+  })
   if (pathname === SIGN_IN_PATH && token) {
     return NextResponse.redirect(new URL(DASHBOARD_PATH, request.url))
   }
@@ -55,7 +64,9 @@ export async function proxy(request: NextRequest) {
 
   if (!token) {
     const signInUrl = new URL(SIGN_IN_PATH, request.url)
-    signInUrl.searchParams.set("callbackUrl", `${pathname}${request.nextUrl.search}`)
+    if (shouldPersistCallback(pathname)) {
+      signInUrl.searchParams.set("callbackUrl", `${pathname}${request.nextUrl.search}`)
+    }
     return NextResponse.redirect(signInUrl)
   }
 

@@ -4,8 +4,6 @@
  * Server page wrapper for the public Admin sign-in route.
  */
 
-import { redirect } from "next/navigation"
-import { getCurrentSession } from "../../lib/auth/session"
 import { SignInForm } from "../auth/signin/SignInForm"
 
 interface SignInPageProps {
@@ -25,11 +23,6 @@ function getFirstParamValue(value: string | string[] | undefined): string | unde
  * @returns Sign-in page UI
  */
 export default async function SignInPage(props: SignInPageProps) {
-  const session = await getCurrentSession()
-  if (session?.user?.id) {
-    redirect("/dashboard")
-  }
-
   const params = (await props.searchParams) ?? {}
   const callbackUrl = getFirstParamValue(params.callbackUrl) ?? "/dashboard"
   const errorCode = getFirstParamValue(params.error)

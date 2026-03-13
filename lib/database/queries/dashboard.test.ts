@@ -177,7 +177,7 @@ describe('dashboard queries', () => {
                 expect.objectContaining({
                     title: 'Deals in Progress',
                     count: 6,
-                    secondaryLabel: 'Tracked in Admin',
+                    secondaryLabel: 'In Admin pipeline',
                 }),
                 expect.objectContaining({
                     title: 'Active Scouts',

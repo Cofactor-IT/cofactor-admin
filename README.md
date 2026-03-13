@@ -222,6 +222,10 @@ Both run:
   - shared base Zod schemas for internal email, password, name, id, and pagination
   - auth schemas refactored to reuse common validation primitives and typed exports
   - server actions now flatten field-level validation errors through a shared helper
+- `CA-24` Security standards
+  - centralized proxy security header helper for CSP, permissions, clickjacking, and MIME controls
+  - security headers now apply to protected responses and redirects consistently
+  - HSTS is enabled in production only, with a dev-safe CSP exception for Next.js HMR
 - `CA-7` Domain-restricted sign up
   - `@cofactor.world` validation in server-side Zod schema
   - Signup server action + user creation + audit logging

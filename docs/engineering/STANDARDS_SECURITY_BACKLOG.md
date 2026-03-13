@@ -11,18 +11,18 @@ depending on chat history.
 
 - `CA-18` done
 - `CA-19` done
-- `CA-20` implemented on `chore/CA-20-configure-prettier`
+- `CA-20` done
+- `CA-21` done
 - `CA-22` done
+- `CA-23` done
+- `CA-24` implemented on `feature/CA-24-security-standards`
 
 ## Recommended Delivery Order
 
-1. `CA-21` Set up Husky pre-commit hooks
-2. `CA-23` Input validation infrastructure
-3. `CA-24` Security standards
-4. `CA-25` Rate limiting infrastructure
-5. `CA-26` HTML sanitization
-6. `CA-27` Audit logging
-7. `CA-28` CSRF protection
+1. `CA-25` Rate limiting infrastructure
+2. `CA-26` HTML sanitization
+3. `CA-27` Audit logging
+4. `CA-28` CSRF protection
 
 ## Repo-Specific Constraints
 

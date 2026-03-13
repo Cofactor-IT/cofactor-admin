@@ -91,10 +91,12 @@ The layout is intentionally board-like: stat cards first, then a two-column card
 Dashboard-specific polish is implemented in `app/globals.css` and includes:
 
 - scoped load-in animation on the dashboard shell
+- solid shared page background with depth carried by the cards themselves
 - soft white-opacity borders for dashboard card surfaces
-- layered navy gradients for stat and module cards
+- layered navy gradients plus shallow shadow on stat and module cards
 - restrained teal glow on primary stat values and inline links
 - compact empty-state blocks with a single recovery action
+- preview rows truncate long titles with ellipsis while keeping right-side detail on one line
 
 ## Sign-In Context Surface
 

@@ -63,7 +63,7 @@ Admin navigation uses a persistent left sidebar as the primary wayfinding patter
   <nav className="flex-1 px-[12px] py-[16px] flex flex-col gap-[4px]">
     <NavItem href="/dashboard" icon={DashboardGrid} label="Dashboard" />
     <NavItem href="/submissions" icon={FileStack} label="Submissions" />
-    <NavItem href="/scouts" icon={Users} label="Scout Profiles" />
+    <NavItem href="/scouts" icon={Users} label="Scouts" />
     <NavItem href="/crm" icon={ContactCard} label="CRM" />
     <NavItem href="/pipeline" icon={Pipeline} label="Deal Pipeline" />
     <NavItem href="/templates" icon={Mail} label="Email Templates" />
@@ -115,7 +115,7 @@ Admin is compact by default:
 - Card padding: `p-[16px] md:p-[24px]`
 - Layout gaps: `gap-2 md:gap-4`
 - Input height: `h-[36px] px-[12px]`
-- Input text: `14px` (compact by default)
+- Input text: `16px` (compact but still readable)
 
 Admin input contrast/focus defaults:
 

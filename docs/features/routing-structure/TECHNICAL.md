@@ -2,13 +2,13 @@
 
 ## Canonical Route Map
 
-- `/dashboard` -> authenticated dashboard placeholder page
+- `/dashboard` -> authenticated dashboard landing page
 - `/signin` -> public credentials sign-in page
-- `/submissions` -> protected placeholder
+- `/submissions` -> protected submissions workspace
 - `/scouts` -> protected tabbed Scouts workspace (`?tab=applications|profiles`)
-- `/crm` -> protected placeholder
-- `/pipeline` -> protected placeholder
-- `/templates` -> protected placeholder
+- `/crm` -> protected CRM workspace shell
+- `/pipeline` -> protected deal pipeline workspace shell
+- `/templates` -> protected email templates workspace shell
 
 ## Compatibility Redirects
 

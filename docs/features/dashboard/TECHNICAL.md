@@ -61,6 +61,13 @@ If `SCOUT_DB_READONLY_URL` is not configured, Scout-backed preview cards stay vi
 
 All dashboard surfaces are card-based and use the shared `components/ui/Card.tsx` primitive.
 The layout is intentionally board-like: stat cards first, then a two-column card region with a primary submission card, secondary deal/scout cards, and a dedicated activity card.
+Dashboard-specific polish is implemented in `app/globals.css` and includes:
+
+- scoped load-in animation on the dashboard shell
+- soft white-opacity borders for dashboard card surfaces
+- layered navy gradients for stat and module cards
+- restrained teal glow on primary stat values and inline links
+- compact empty-state blocks with a single recovery action
 
 ## Known Limitation
 

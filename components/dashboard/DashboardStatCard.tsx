@@ -19,7 +19,10 @@ export function DashboardStatCard(props: DashboardStat) {
     <Link href={props.href} className="admin-dashboard-stat-link">
       <Card className="admin-dashboard-stat-card">
         <Card.Body>
-          <p className="caption m-0">{props.title}</p>
+          <div className="admin-dashboard-stat-header">
+            <p className="caption m-0">{props.title}</p>
+            <span className="caption">Open</span>
+          </div>
           <div className="admin-dashboard-stat-value">{props.count}</div>
           <p className="caption m-0">{props.secondaryLabel}</p>
         </Card.Body>

@@ -21,6 +21,9 @@ Give analysts an immediate at-a-glance landing page after sign-in.
 - Submission Queue is the primary large card
 - Deal Pipeline and Scout Profiles sit as secondary cards beneath it
 - Recent Activity sits in its own side card for persistent scanning
+- Cards use layered dark surfaces with soft white-opacity borders instead of hard dividers
+- Important stats use restrained teal glow to feel active without becoming noisy
+- Hover interactions are short and subtle: brighter borders, slight lift, shallow slide on rows
 
 ## Data Sources
 

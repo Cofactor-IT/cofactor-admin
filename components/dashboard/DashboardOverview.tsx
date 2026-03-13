@@ -29,7 +29,7 @@ export function DashboardOverview(props: DashboardOverviewProps) {
   const [submissionSection, dealSection, scoutSection] = props.previews
 
   return (
-    <section className="admin-content-stack">
+    <section className="admin-content-stack admin-dashboard-shell">
       <div className="admin-dashboard-grid">
         {props.stats.map((stat) => <DashboardStatCard key={stat.title} {...stat} />)}
       </div>

@@ -133,6 +133,10 @@ Avoid Scout's spacious defaults in dense Admin views.
 
 Use existing typography classes, but with dark-surface color pairing:
 
+- Standard Admin body copy uses `16px`
+- Use `.body-large` only when you intentionally want a more editorial or marketing-weight block
+- Dense operational cards, tables, previews, and helper text should default to `.body` or `.caption`
+
 ```tsx
 <h2 className="text-[var(--admin-text-primary)]">Page Title</h2>
 <p className="body text-[var(--admin-text-primary)]">Primary body text</p>

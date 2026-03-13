@@ -6,6 +6,7 @@
 
 import Link from "next/link"
 import type { DashboardActivityItem } from "../../lib/database/queries/dashboard"
+import { DashboardEmptyState } from "./DashboardEmptyState"
 import { Card } from "../ui/Card"
 
 interface DashboardActivityFeedProps {
@@ -15,9 +16,13 @@ interface DashboardActivityFeedProps {
 
 function emptyActivityState() {
   return (
-    <p className="body m-0">
-      No dashboard activity yet. Submission and deal updates will appear here as Admin actions are recorded.
-    </p>
+    <DashboardEmptyState
+      iconLabel="A"
+      title="No recent activity yet"
+      message="Submission and deal updates will appear here as Admin actions are recorded."
+      href="/submissions"
+      actionLabel="Open submissions"
+    />
   )
 }
 
@@ -50,8 +55,14 @@ export function DashboardActivityFeed(props: DashboardActivityFeedProps) {
   const cardClassName = props.className ? `admin-dashboard-module-card ${props.className}` : "admin-dashboard-module-card"
   return (
     <Card className={cardClassName}>
-      <Card.Header>
-        <h3 className="m-0">Recent Activity</h3>
+      <Card.Header className="admin-preview-header">
+        <div className="admin-preview-heading">
+          <h3 className="m-0">Recent Activity</h3>
+          <p className="caption m-0">Live audit trail across submissions and deals.</p>
+        </div>
+        <Link href="/submissions" className="admin-inline-link">
+          Open queue
+        </Link>
       </Card.Header>
       <Card.Body>{props.items.length === 0 ? emptyActivityState() : activityList(props.items)}</Card.Body>
     </Card>

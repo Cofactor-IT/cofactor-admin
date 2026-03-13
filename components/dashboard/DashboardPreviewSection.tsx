@@ -6,6 +6,7 @@
 
 import Link from "next/link"
 import type { DashboardPreviewSection as DashboardPreviewSectionModel } from "../../lib/database/queries/dashboard"
+import { DashboardEmptyState } from "./DashboardEmptyState"
 import { Card } from "../ui/Card"
 
 interface DashboardPreviewSectionProps {
@@ -13,8 +14,16 @@ interface DashboardPreviewSectionProps {
   className?: string
 }
 
-function emptyState(message: string) {
-  return <p className="body m-0">{message}</p>
+function emptyState(section: DashboardPreviewSectionModel) {
+  return (
+    <DashboardEmptyState
+      iconLabel={section.title.charAt(0)}
+      title={`No ${section.title.toLowerCase()} yet`}
+      message={section.emptyMessage}
+      href={section.href}
+      actionLabel="Open module"
+    />
+  )
 }
 
 function itemList(items: DashboardPreviewSectionModel["items"]) {
@@ -54,7 +63,7 @@ export function DashboardPreviewSection(props: DashboardPreviewSectionProps) {
           View all
         </Link>
       </Card.Header>
-      <Card.Body>{section.items.length === 0 ? emptyState(section.emptyMessage) : itemList(section.items)}</Card.Body>
+      <Card.Body>{section.items.length === 0 ? emptyState(section) : itemList(section.items)}</Card.Body>
     </Card>
   )
 }

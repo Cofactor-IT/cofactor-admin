@@ -764,19 +764,25 @@
     .admin-audit-filter-panel {
         display: grid;
         gap: 14px;
-        padding: 16px 20px;
+        padding: 16px 24px;
     }
 
     .admin-audit-filter-grid {
         display: grid;
         grid-template-columns: repeat(5, minmax(0, 1fr));
-        gap: 12px;
+        column-gap: 16px;
+        row-gap: 12px;
     }
 
     .admin-audit-filter-field {
         display: grid;
         gap: 6px;
         min-width: 0;
+        align-content: start;
+    }
+
+    .admin-audit-filter-field .admin-input {
+        width: 100%;
     }
 
     .admin-audit-filter-actions {

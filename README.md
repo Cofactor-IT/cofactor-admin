@@ -239,6 +239,10 @@ Both run:
   - successful sign in, failed sign in, sign out, account creation, and password reset now flow
     through the shared audit contract
   - IT users can review recent audit history at `/settings/audit-log`
+- `CA-28` CSRF protection
+  - added `verifyCsrfOrigin()` for future custom mutating API routes
+  - documented the current protection split between Next.js Server Actions and NextAuth
+  - preserved hardened session-cookie defaults with `sameSite: 'lax'`
 - `CA-7` Domain-restricted sign up
   - `@cofactor.world` validation in server-side Zod schema
   - Signup server action + user creation + audit logging

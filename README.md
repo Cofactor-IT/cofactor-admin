@@ -174,6 +174,11 @@ Shared standards and design notes live in:
 - `docs/pm-notes/CODE_STANDARDS.md`
 - `docs/pm-notes/DESIGN_GUIDELINES.md`
 
+Architecture decisions live in:
+
+- `docs/decisions/`
+- `docs/decisions/0001-query-and-api-boundaries.md`
+
 ## CI/CD
 
 Both pipeline systems are configured:

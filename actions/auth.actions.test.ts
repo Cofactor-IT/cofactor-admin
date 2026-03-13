@@ -33,7 +33,7 @@ function buildFormData(overrides: Partial<Record<string, string>> = {}) {
     const values = {
         name: 'Theis Admin',
         email: 'theis@cofactor.world',
-        password: 'strong-password-123',
+        password: 'Cofactor123!',
         role: 'ANALYST',
         ...overrides,
     };

@@ -93,7 +93,11 @@ export function SignUpForm() {
                     />
                     {fieldError(state, 'password') ? (
                         <p className="caption admin-field-error">{fieldError(state, 'password')}</p>
-                    ) : null}
+                    ) : (
+                        <p className="caption">
+                            Use 12+ characters with uppercase, lowercase, number, and symbol.
+                        </p>
+                    )}
 
                     <label className={labelClassName(state, 'role')} htmlFor="role">
                         Role

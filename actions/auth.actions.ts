@@ -11,11 +11,12 @@ import { hashPassword } from '../lib/auth/password';
 import { logAuditAction } from '../lib/database/queries/auditLogs';
 import { createUser, findUserByEmail } from '../lib/database/queries/users';
 import { signUpSchema, type SignUpInput } from '../lib/validation/auth.schemas';
+import { flattenValidationErrors, type ValidationFieldErrors } from '../lib/validation/result';
 
 export interface SignUpActionState {
     success: boolean;
     message?: string;
-    fieldErrors?: Record<string, string[] | undefined>;
+    fieldErrors?: ValidationFieldErrors;
 }
 
 function parseSignUpFormData(formData: FormData): Record<string, unknown> {
@@ -27,9 +28,7 @@ function parseSignUpFormData(formData: FormData): Record<string, unknown> {
     };
 }
 
-function buildValidationErrorState(
-    fieldErrors: Record<string, string[] | undefined>
-): SignUpActionState {
+function buildValidationErrorState(fieldErrors: ValidationFieldErrors): SignUpActionState {
     return {
         success: false,
         message: 'Please fix the highlighted fields.',
@@ -99,7 +98,7 @@ export async function signUp(
 
     const validated = signUpSchema.safeParse(parseSignUpFormData(formData));
     if (!validated.success) {
-        return buildValidationErrorState(validated.error.flatten().fieldErrors);
+        return buildValidationErrorState(flattenValidationErrors(validated.error));
     }
 
     const normalizedEmail = validated.data.email.toLowerCase().trim();

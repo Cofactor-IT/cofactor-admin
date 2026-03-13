@@ -76,7 +76,9 @@ export function ResetPasswordForm(props: ResetPasswordFormProps) {
             {firstFieldError(state, 'password') ? (
                 <p className="caption admin-field-error">{firstFieldError(state, 'password')}</p>
             ) : (
-                <p className="caption">Password must be at least 12 characters long.</p>
+                <p className="caption">
+                    Use 12+ characters with uppercase, lowercase, number, and symbol.
+                </p>
             )}
 
             {state.message ? (

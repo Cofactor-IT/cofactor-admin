@@ -5,34 +5,22 @@
  */
 
 import { z } from 'zod';
-
-const ALLOWED_EMAIL_DOMAIN = '@cofactor.world';
-const DOMAIN_RESTRICTION_MESSAGE = 'Only @cofactor.world email addresses are permitted';
-
-export const passwordSchema = z.string().min(12, 'Password must be at least 12 characters long');
-
-const domainRestrictedEmailSchema = z
-    .string()
-    .email('Please provide a valid email address')
-    .refine(
-        (email) => email.toLowerCase().endsWith(ALLOWED_EMAIL_DOMAIN),
-        DOMAIN_RESTRICTION_MESSAGE
-    );
+import { cofactorEmailSchema, nameSchema, passwordSchema } from './base.schemas';
 
 export const signUpSchema = z.object({
-    name: z.string().min(2, 'Name must be at least 2 characters long'),
-    email: domainRestrictedEmailSchema,
+    name: nameSchema,
+    email: cofactorEmailSchema,
     password: passwordSchema,
     role: z.enum(['ANALYST', 'IT']),
 });
 
 export const signInSchema = z.object({
-    email: domainRestrictedEmailSchema,
+    email: cofactorEmailSchema,
     password: z.string().min(1, 'Password is required'),
 });
 
 export const forgotPasswordSchema = z.object({
-    email: domainRestrictedEmailSchema,
+    email: cofactorEmailSchema,
 });
 
 export const resetPasswordSchema = z.object({
@@ -40,7 +28,22 @@ export const resetPasswordSchema = z.object({
     password: passwordSchema,
 });
 
+export const createAccountSchema = signUpSchema;
+
+export const changePasswordSchema = z
+    .object({
+        currentPassword: z.string().min(1, 'Current password is required'),
+        newPassword: passwordSchema,
+        confirmPassword: z.string().min(1, 'Please confirm your new password'),
+    })
+    .refine((data) => data.newPassword === data.confirmPassword, {
+        message: 'Passwords do not match',
+        path: ['confirmPassword'],
+    });
+
 export type SignUpInput = z.infer<typeof signUpSchema>;
 export type SignInInput = z.infer<typeof signInSchema>;
 export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>;
 export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;
+export type CreateAccountInput = z.infer<typeof createAccountSchema>;
+export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;

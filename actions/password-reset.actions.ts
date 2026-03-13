@@ -22,6 +22,7 @@ import {
 import { findPasswordResetCandidateByEmail } from '../lib/database/queries/users';
 import { sendPasswordResetEmail } from '../lib/email/passwordReset';
 import { forgotPasswordSchema, resetPasswordSchema } from '../lib/validation/auth.schemas';
+import { flattenValidationErrors, type ValidationFieldErrors } from '../lib/validation/result';
 
 const GENERIC_RESET_REQUEST_MESSAGE =
     'If an account exists for that email, you will receive password reset instructions.';
@@ -31,14 +32,14 @@ const RESET_SUCCESS_MESSAGE = 'Password updated. You can sign in now.';
 export interface ForgotPasswordActionState {
     success: boolean;
     message: string;
-    fieldErrors?: Record<string, string[] | undefined>;
+    fieldErrors?: ValidationFieldErrors;
     devResetUrl?: string;
 }
 
 export interface ResetPasswordActionState {
     success: boolean;
     message: string;
-    fieldErrors?: Record<string, string[] | undefined>;
+    fieldErrors?: ValidationFieldErrors;
 }
 
 function shouldExposeDevResetUrl(): boolean {
@@ -47,9 +48,7 @@ function shouldExposeDevResetUrl(): boolean {
     );
 }
 
-function buildInvalidFieldsState(
-    fieldErrors: Record<string, string[] | undefined>
-): ForgotPasswordActionState {
+function buildInvalidFieldsState(fieldErrors: ValidationFieldErrors): ForgotPasswordActionState {
     return {
         success: false,
         message: 'Please fix the highlighted fields.',
@@ -92,7 +91,7 @@ export async function requestPasswordReset(
     formData: FormData
 ): Promise<ForgotPasswordActionState> {
     const parsed = forgotPasswordSchema.safeParse(parseForgotPasswordFormData(formData));
-    if (!parsed.success) return buildInvalidFieldsState(parsed.error.flatten().fieldErrors);
+    if (!parsed.success) return buildInvalidFieldsState(flattenValidationErrors(parsed.error));
 
     const user = await findPasswordResetCandidateByEmail(parsed.data.email);
     if (!user || !user.isActive) return { success: true, message: GENERIC_RESET_REQUEST_MESSAGE };
@@ -135,7 +134,7 @@ export async function resetPassword(
         return {
             success: false,
             message: 'Please fix the highlighted fields.',
-            fieldErrors: parsed.error.flatten().fieldErrors,
+            fieldErrors: flattenValidationErrors(parsed.error),
         };
     }
 

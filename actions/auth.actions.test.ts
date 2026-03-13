@@ -155,4 +155,24 @@ describe('signUp', () => {
             },
         });
     });
+
+    it('sanitizes stored account names before persistence', async () => {
+        vi.mocked(findUserByEmail).mockResolvedValue(null);
+        vi.mocked(hashPassword).mockResolvedValue('hashed-password');
+        vi.mocked(createUser).mockResolvedValue({
+            id: 'user_2',
+            name: 'Theis Admin',
+            email: 'theis@cofactor.world',
+            role: 'ANALYST',
+            createdAt: new Date(),
+        });
+
+        await signUp({ success: false }, buildFormData({ name: '<strong>Theis</strong> Admin' }));
+
+        expect(createUser).toHaveBeenCalledWith(
+            expect.objectContaining({
+                name: 'Theis Admin',
+            })
+        );
+    });
 });

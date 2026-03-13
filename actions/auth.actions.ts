@@ -11,6 +11,7 @@ import { hashPassword } from '../lib/auth/password';
 import { logAuditAction } from '../lib/database/queries/auditLogs';
 import { createUser, findUserByEmail } from '../lib/database/queries/users';
 import { RATE_LIMITS, checkRateLimit, getRequestIpAddress } from '../lib/security/rate-limit';
+import { sanitizePlainText } from '../lib/security/sanitization';
 import { signUpSchema, type SignUpInput } from '../lib/validation/auth.schemas';
 import { flattenValidationErrors, type ValidationFieldErrors } from '../lib/validation/result';
 import { headers } from 'next/headers';
@@ -67,9 +68,10 @@ function buildRateLimitState(retryAfterSeconds: number): SignUpActionState {
 
 async function createValidatedUser(data: SignUpInput) {
     const passwordHash = await hashPassword(data.password);
+    const sanitizedName = sanitizePlainText(data.name);
 
     return createUser({
-        name: data.name.trim(),
+        name: sanitizedName,
         email: data.email.toLowerCase().trim(),
         passwordHash,
         role: data.role,

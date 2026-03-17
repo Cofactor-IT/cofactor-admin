@@ -23,7 +23,7 @@ interface AdminShellProps {
     pageTitle: string;
     activePath: AdminRoute;
     userName: string;
-    userRole: 'ANALYST' | 'IT';
+    userRole: 'ANALYST' | 'IT' | 'IT_ADMIN';
     pageActions?: ReactNode;
     children: ReactNode;
 }
@@ -293,7 +293,7 @@ function navIcon(href: NavItemDefinition['href'], isActive: boolean): ReactNode 
  * @returns Sidebar + page content layout
  */
 export function AdminShell(props: AdminShellProps) {
-    const showTeamManagement = props.userRole === 'IT';
+    const showTeamManagement = props.userRole === 'IT' || props.userRole === 'IT_ADMIN';
     const userInitials = getUserInitials(props.userName);
 
     return (

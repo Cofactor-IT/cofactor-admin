@@ -10,19 +10,22 @@ declare module 'next-auth' {
     interface Session {
         user: {
             id: string;
-            role: 'ANALYST' | 'IT';
+            role: 'ANALYST' | 'IT' | 'IT_ADMIN';
+            gdprDelegate: boolean;
         } & DefaultSession['user'];
     }
 
     interface User {
-        role: 'ANALYST' | 'IT';
+        role: 'ANALYST' | 'IT' | 'IT_ADMIN';
+        gdprDelegate: boolean;
     }
 }
 
 declare module 'next-auth/jwt' {
     interface JWT {
         id?: string;
-        role?: 'ANALYST' | 'IT';
+        role?: 'ANALYST' | 'IT' | 'IT_ADMIN';
+        gdprDelegate?: boolean;
         email?: string | null;
         name?: string | null;
     }

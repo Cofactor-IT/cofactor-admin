@@ -10,7 +10,7 @@ interface CreateUserParams {
     name: string;
     email: string;
     passwordHash: string;
-    role: 'ANALYST' | 'IT';
+    role: 'ANALYST' | 'IT' | 'IT_ADMIN';
 }
 
 interface UpdateFailedLoginAttemptsParams {
@@ -24,7 +24,8 @@ interface AuthUserRecord {
     name: string;
     email: string;
     passwordHash: string;
-    role: 'ANALYST' | 'IT';
+    role: 'ANALYST' | 'IT' | 'IT_ADMIN';
+    gdprDelegate: boolean;
     isActive: boolean;
     failedLoginAttempts: number;
     lockedUntil: Date | null;
@@ -77,6 +78,7 @@ export async function findAuthUserByEmail(email: string): Promise<AuthUserRecord
             email: true,
             passwordHash: true,
             role: true,
+            gdprDelegate: true,
             isActive: true,
             failedLoginAttempts: true,
             lockedUntil: true,

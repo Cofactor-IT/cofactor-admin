@@ -158,7 +158,13 @@ async function authorizeWithCredentials(credentials: unknown, req: unknown) {
         userId: user.id,
         userEmail: user.email,
     });
-    return { id: user.id, name: user.name, email: user.email, role: user.role };
+    return {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        gdprDelegate: user.gdprDelegate,
+    };
 }
 
 // ============================================
@@ -184,7 +190,8 @@ export const authConfig: NextAuthOptions = {
             if (!user) return token;
 
             token.id = user.id;
-            token.role = (user as { role?: 'ANALYST' | 'IT' }).role;
+            token.role = (user as { role?: 'ANALYST' | 'IT' | 'IT_ADMIN' }).role;
+            token.gdprDelegate = (user as { gdprDelegate?: boolean }).gdprDelegate ?? false;
             token.email = user.email;
             token.name = user.name;
             return token;
@@ -193,7 +200,9 @@ export const authConfig: NextAuthOptions = {
             if (!session.user) return session;
 
             session.user.id = (token.id as string | undefined) ?? '';
-            session.user.role = (token.role as 'ANALYST' | 'IT' | undefined) ?? 'ANALYST';
+            session.user.role =
+                (token.role as 'ANALYST' | 'IT' | 'IT_ADMIN' | undefined) ?? 'ANALYST';
+            session.user.gdprDelegate = (token.gdprDelegate as boolean | undefined) ?? false;
             session.user.email = (token.email as string | undefined) ?? session.user.email;
             session.user.name = (token.name as string | undefined) ?? session.user.name;
             return session;

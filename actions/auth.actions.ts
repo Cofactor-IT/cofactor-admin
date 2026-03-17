@@ -81,7 +81,7 @@ async function createValidatedUser(data: SignUpInput) {
 async function writeUserCreatedAudit(
     userId: string,
     email: string,
-    role: 'ANALYST' | 'IT',
+    role: 'ANALYST' | 'IT' | 'IT_ADMIN',
     actorId: string,
     actorEmail?: string | null
 ) {

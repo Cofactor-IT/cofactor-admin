@@ -14,6 +14,7 @@ model User {
   email               String               @unique
   passwordHash        String
   role                Role                 @default(ANALYST)
+  gdprDelegate        Boolean              @default(false)
   isActive            Boolean              @default(true)
   failedLoginAttempts Int                  @default(0)
   lockedUntil         DateTime?
@@ -34,6 +35,7 @@ model User {
   createdUsers        User[]               @relation("CreatedBy")
 
   @@index([role])
+  @@index([gdprDelegate])
   @@index([isActive])
   @@index([lockedUntil])
   @@index([lastVisitAt])
@@ -219,8 +221,9 @@ model AuditLog {
 }
 
 enum Role {
-  ANALYST
+  IT_ADMIN
   IT
+  ANALYST
 }
 
 enum DealStage {

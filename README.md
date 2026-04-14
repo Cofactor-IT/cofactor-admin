@@ -74,6 +74,9 @@ Start Admin + Scout local DBs + Adminer:
 npm run docker:up:all
 ```
 
+This starts an Admin-managed Scout mirror on `localhost:55435`.
+Use it only if you explicitly want a separate Scout Postgres owned by the Admin repo.
+
 Bootstrap local Scout schema and scoped roles:
 
 ```bash
@@ -123,6 +126,21 @@ Current recommended local pairing:
 - Admin app: `http://localhost:3001`
 - Scout app: `http://localhost:3002`
 - Shared Scout database: `postgresql://cofactor:...@localhost:5434/cofactor_db?schema=public`
+
+For this shared pairing, `SCOUT_DB_READONLY_URL` and `SCOUT_DB_WRITE_URL` in Admin should point
+at `localhost:5434/cofactor_db`, not the optional Admin mirror on `localhost:55435`.
+
+If you need to create the Admin read-only/write roles directly on the real local Scout DB, run the
+setup script against Scout's database and skip the Admin schema push:
+
+```bash
+SCOUT_DB_NAME=cofactor_db \
+SCOUT_DB_PORT=5434 \
+SCOUT_DB_ADMIN_USER=cofactor \
+SCOUT_DB_ADMIN_PASSWORD=<copy from ../cofactor-scout/.env> \
+SCOUT_DB_SKIP_SCHEMA_PUSH=true \
+npm run scout:local:setup
+```
 
 Use this to run both apps together from the Admin repo:
 

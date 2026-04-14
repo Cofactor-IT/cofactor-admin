@@ -81,10 +81,14 @@ async function main() {
                 }
             );
         } else {
-            await runCommand('npx', ['prisma', 'db', 'push', '--schema=prisma/scout/schema.prisma'], {
-                ...process.env,
-                SCOUT_DB_READONLY_URL: scoutAdminUrl,
-            });
+            await runCommand(
+                'npx',
+                ['prisma', 'db', 'push', '--schema=prisma/scout/schema.prisma'],
+                {
+                    ...process.env,
+                    SCOUT_DB_READONLY_URL: scoutAdminUrl,
+                }
+            );
         }
     }
 

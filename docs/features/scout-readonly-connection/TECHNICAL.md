@@ -90,6 +90,23 @@ Validate read-only behavior:
 npm run scout:readonly:test
 ```
 
+## Shared Local Scout Workflow
+
+When Admin runs locally alongside the real `../cofactor-scout` app, the Scout read-only URL should
+target the same database the Scout app uses, typically `localhost:5434/cofactor_db`.
+
+Do not assume the optional Admin Docker `scout-db` container on `localhost:55435` is the same
+database. That container is an isolated mirror owned by the Admin repo.
+
+If you need to create the Admin roles directly on the real local Scout DB, run
+`npm run scout:local:setup` with:
+
+- `SCOUT_DB_NAME=cofactor_db`
+- `SCOUT_DB_PORT=5434`
+- `SCOUT_DB_ADMIN_USER=cofactor`
+- `SCOUT_DB_ADMIN_PASSWORD=<copy from ../cofactor-scout/.env>`
+- `SCOUT_DB_SKIP_SCHEMA_PUSH=true`
+
 ## Read-Only Verification Strategy
 
 The test script checks:

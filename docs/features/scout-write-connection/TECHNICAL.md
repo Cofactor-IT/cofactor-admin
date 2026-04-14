@@ -63,6 +63,10 @@ Bootstrap local Scout DB + scoped roles:
 npm run scout:local:setup
 ```
 
+For the shared local Admin + Scout workflow, point the setup script at the real Scout local DB on
+`localhost:5434/cofactor_db` and set `SCOUT_DB_SKIP_SCHEMA_PUSH=true` so the script only creates
+the Admin roles/grants without pushing Admin's copy of the Scout schema.
+
 Verify scoped-write behavior:
 
 ```bash

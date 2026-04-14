@@ -5,6 +5,11 @@
  * - Pushes Scout Prisma schema using admin credentials
  * - Creates/updates read-only and scoped-write roles
  * - Applies grants for read and status-only write behavior
+ *
+ * Optional:
+ * - Set SCOUT_DB_SKIP_SCHEMA_PUSH=true when targeting the real local cofactor-scout
+ *   database and you only need Admin roles/grants without pushing Admin's copy of
+ *   the Scout Prisma schema.
  */
 
 import 'dotenv/config';
@@ -42,6 +47,7 @@ function runCommand(command, args, env) {
 
 async function main() {
     const isWindows = process.platform === 'win32';
+    const shouldSkipSchemaPush = process.env.SCOUT_DB_SKIP_SCHEMA_PUSH === 'true';
 
     const scoutDbName = requireEnv('SCOUT_DB_NAME', 'cofactor_scout_db');
     const scoutDbHost = requireEnv('SCOUT_DB_HOST', 'localhost');
@@ -61,21 +67,25 @@ async function main() {
     const scoutReadonlyUrl = `postgresql://${scoutReadonlyUser}:${scoutReadonlyPassword}@${scoutDbHost}:${scoutDbPort}/${scoutDbName}?schema=public`;
     const scoutWriteUrl = `postgresql://${scoutWriteUser}:${scoutWritePassword}@${scoutDbHost}:${scoutDbPort}/${scoutDbName}?schema=public`;
 
-    console.log('Pushing Scout schema to local database...');
-    if (isWindows) {
-        await runCommand(
-            'cmd.exe',
-            ['/d', '/s', '/c', 'npx prisma db push --schema=prisma/scout/schema.prisma'],
-            {
+    if (shouldSkipSchemaPush) {
+        console.log('Skipping Scout schema push because SCOUT_DB_SKIP_SCHEMA_PUSH=true');
+    } else {
+        console.log('Pushing Scout schema to local database...');
+        if (isWindows) {
+            await runCommand(
+                'cmd.exe',
+                ['/d', '/s', '/c', 'npx prisma db push --schema=prisma/scout/schema.prisma'],
+                {
+                    ...process.env,
+                    SCOUT_DB_READONLY_URL: scoutAdminUrl,
+                }
+            );
+        } else {
+            await runCommand('npx', ['prisma', 'db', 'push', '--schema=prisma/scout/schema.prisma'], {
                 ...process.env,
                 SCOUT_DB_READONLY_URL: scoutAdminUrl,
-            }
-        );
-    } else {
-        await runCommand('npx', ['prisma', 'db', 'push', '--schema=prisma/scout/schema.prisma'], {
-            ...process.env,
-            SCOUT_DB_READONLY_URL: scoutAdminUrl,
-        });
+            });
+        }
     }
 
     const client = new Client({ connectionString: scoutAdminUrl });
